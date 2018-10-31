@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript", src="js/buttons.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<!-- <script type="text/javascript">
+		function LoadCalendars(){
+
+	var output = document.getElementById('AvaCalendar');
+	
+	// for(var i=0; i<data.length; i++){
+	// 	jsonStr += data[i].name + '   ' + data[i].location;
+	// }
+	output.innerHTML = "Allo";
+}
+	</script> -->
+<h1>
+	<title>Calendar</title>
+		Calendar Management Systems
+</h1>
+<body>		
+	<div id="buttons"> 
+				<button onclick=target_popup(this)>Create Calendar</button> <br><br>
+				<form  name="removeForm" method="post">
+					<input type="text" name="removeCalendar" value="">
+				</form>
+				<button onclick="removeCalendar()">Remove Calendar</button>
+				<br>
+				<form name="loadForm" method="post">
+					<input type="text" name="loadCalendar" value="">
+				</form>
+				<button onclick="LoadCalendars()">Load Calendar</button>
+				<br><br><br>
+				<button onclick="ShowCalendars()">Show Created Calendars</button>
+				<br>
+				<button onclick="location.reload()">Refresh</button>
+	<!-- </div>
+	<div id="AvaCalendar">
+	</div> -->
+	<br><br>
+	<h2>---------- Current Calendar ----------</h2>
+	<div id="curCalendar">
+	</div>
+
+	<br><br><br><br><br>
+	<h2>----------------------- Results -----------------------</h2>
+	<div id="results">
+	</div>
+	
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+<style>
+body {background-color: powderblue;}
+h1   {color: black; 
+	margin: auto;
+    width: 60%;
+    text-align: center;
+    padding: 10px;}
+h2   {color: black; 
+	margin: auto;
+    width: 60%;
+    text-align: center;
+    padding: 10px;}
+
+#buttons  {height: 50px; 
+		   background-color: powerblue;
+		   text-align: center}
+#AvaCalenda {background-color: powerblue}
+p    {color: red;}
+div {background-color: powerblue}
+button {color: black}
+.main-svg {
+   background-color: transparent !important;
+}
+</style>
+</html>

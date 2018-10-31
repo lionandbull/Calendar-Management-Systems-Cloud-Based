@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<script src="js/buttons.js"></script>
+<head>
+	<title>Add Calendar</title>
+	<link rel="import" href="calendar.html">
+</head>
+<body>
+	<div>
+		<p></p>
+	</div>
+	<div id="parameters">
+			<h1>Create Calendar</h1>
+			
+			<form name="parameterForm" method="post">
+			Calendar Name: <input type="text" name="calendarName" value=""><br>
+			Starting Date: <input type="text" name="startDate" value=""><br>
+			Ending Date  : <input type="text" name="endDate" value=""><br>
+			Starting Time: <input type="text" name="startTime" value=""><br>
+			Ending Time  : <input type="text" name="endTime" value=""><br>
+			Duration     : <input type="text" name="duration" value=""><br>
+			Location     : <input type="text" name="location" value=""><br>
+			</form>
+	</div>
+
+
+
+	<div id="buttons">
+<!--	<button onclick="test()">Submit</button>	-->
+	<button onclick="submit()">Submit</button>	
+
+	<button onclick="window.close()">close</button>
+	</div>
+</body>
+
+<h1>Results</h1>
+<div id="results">
+</div>
+
+
+<style type="text/css">
+	h1 {text-align: center;}
+	#buttons {text-align: center;}
+	#parameters {text-align: center;}
+</style>
+</html>
