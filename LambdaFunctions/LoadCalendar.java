@@ -37,7 +37,7 @@ public class LoadCalendar implements RequestStreamHandler {
 	String quot = "\"";
 	
 	private AmazonS3 s3 = AmazonS3ClientBuilder.standard().build();
-	private String foldName = "kmonopoli509/createdCalendars";
+	private String foldName = "cms-neutron/createdCalendar";
 	
 	
 	public boolean checkExistence(String arg) {
@@ -75,7 +75,7 @@ public class LoadCalendar implements RequestStreamHandler {
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException {
 		JSONParser parser = new JSONParser();
 	    LambdaLogger logger = context.getLogger();
-        logger.log("Loading Java Lambda handler of RequestStreamHandler");
+        logger.log("Loading Java Lambda handler of RequestStreamHandler ");
 
         JSONObject headerJson = new JSONObject();
         headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
@@ -89,40 +89,32 @@ public class LoadCalendar implements RequestStreamHandler {
         responseJson.put("headers", headerJson);
 
         JSONObject responseBody = new JSONObject();
-        
+   
         try {        
+        	
 	        String calName = "";
-	        
 	        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 	        JSONObject event = (JSONObject) parser.parse(reader);
-	        logger.log("event:" + event.toJSONString());
+//	        logger.log("event:" + event.toJSONString());
 	      
 	        // when passed as POST, appears as 'body' in the request, so must be extracted.
-	        String body = (String)event.get("body");
-	        if (body != null) {
-	        	event = (JSONObject) parser.parse(body);
-	        }
-	        
+	        if (event.get("queryStringParameters") != null) {
+                JSONObject qps = (JSONObject)event.get("queryStringParameters");
+                if ( qps.get("calName") != null) {
+                    calName = (String)qps.get("calName");
+                }
+            }
 	        //responseBody.put("input", event.toJSONString());
-	        logger.log("event:" + event.toString());
-	        if (event != null) {
-		        if ( event.get("calName") != null) {
-	                calName = (String)event.get("calName");
-	                logger.log("calName = " + calName);
-	            }
-		
-	        }
 	        String result;
+	        
 	        if (checkExistence(calName)) {
 	        	result = loadValueFromBucket(calName);
 	        }
 	        else {
 	        	result = "Calendar: " + "'" + calName + "'" + " doesn't exist!";
 	        }
-			logger.log("Received parameters: " + calName);
-			
+			logger.log("Received parameters: " + calName + " ");
 			// must go in as a String.
-			
 			
 	        responseBody.put("Result", result);
 	        responseJson.put("statusCode", 200);
@@ -130,7 +122,6 @@ public class LoadCalendar implements RequestStreamHandler {
 				
 	    } catch (Exception e) {
 	    	logger.log(e.toString());
-
 	        responseBody.put("Result", "Unable to process input");
 	        responseJson.put("statusCode", 422);
 	        responseJson.put("body", responseBody.toString());  

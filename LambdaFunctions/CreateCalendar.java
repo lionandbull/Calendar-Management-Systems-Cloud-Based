@@ -26,6 +26,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.google.gson.Gson;
 import com.sun.istack.internal.logging.Logger;
 
 import java.io.InputStream;
@@ -37,7 +38,7 @@ public class CreateCalendar implements RequestStreamHandler {
 	String quot = "\"";
 	
 	private AmazonS3 s3 = AmazonS3ClientBuilder.standard().build();
-	private String foldName = "kmonopoli509/createdCalendars";
+	private String foldName = "cms-neutron/createdCalendar";
 	
 	/** Load up S3 Bucket with given key */
 	public boolean checkExistence(String arg) {
@@ -98,7 +99,9 @@ public class CreateCalendar implements RequestStreamHandler {
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException {
 		JSONParser parser = new JSONParser();
 	    LambdaLogger logger = context.getLogger();
-        logger.log("Loading Java Lambda handler of RequestStreamHandler");
+        logger.log("Loading Java Lambda handler of RequestStreamHandler ");
+        
+        
 
         JSONObject headerJson = new JSONObject();
         headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
@@ -107,6 +110,7 @@ public class CreateCalendar implements RequestStreamHandler {
         headerJson.put("Access-Control-Allow-Origin",  "*");
         headerJson.put("Access-Control-Allow-Methods", "GET,POST");
         
+         
         JSONObject responseJson = new JSONObject();
         responseJson.put("isBase64Encoded", false);
         responseJson.put("headers", headerJson);
@@ -121,6 +125,14 @@ public class CreateCalendar implements RequestStreamHandler {
 	        String endTime = "";
 	        String duration = "";
 	        String location = "";
+	        
+//	        logger.log("---------I am Here!!!!!!!!!!");
+//	        CalendarTest calTest = new Gson().fromJson(new InputStreamReader(inputStream),
+//	        		CalendarTest.class);
+//	        logger.log("---------I am Here!!!!!!!!!!");
+//	        logger.log(calTest.toString());
+//	        logger.log("------------------------------");
+	        
 	        
 	        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 	        JSONObject event = (JSONObject) parser.parse(reader);
@@ -198,3 +210,20 @@ public class CreateCalendar implements RequestStreamHandler {
 	}
 
 }
+
+//class CalendarTest {
+//
+//    private String calName;
+//    private String startDate;
+//    private String endDate;
+//    private String startTime;
+//    private String endTime;
+//    private String duration;
+////    private String location;
+//
+//    @Override
+//    public String toString() {
+//        return calName + " & " + startDate + " & " + endDate + " & " + startTime + 
+//        		" & " + endTime + " & " + duration + " & " ;
+//    }
+//}

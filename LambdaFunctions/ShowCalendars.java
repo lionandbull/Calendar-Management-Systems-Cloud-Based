@@ -43,15 +43,15 @@ public class ShowCalendars implements RequestStreamHandler {
 	String quot = "\"";
 	
 	private AmazonS3 s3 = AmazonS3ClientBuilder.standard().build();
-	private String foldName = "kmonopoli509/createdCalendars";
+	private String foldName = "cms-neutron/createdCalendar";
 	
 	/** Delete data to S3 bucket */
 	public List<String> loadBucketsFromBucket() {  
 		List<String> result = new ArrayList<String>();
 		ListObjectsRequest listObjectsRequest = 
                 new ListObjectsRequest()
-                      .withBucketName("kmonopoli509")
-                      .withPrefix("createdCalendars" + "/");
+                      .withBucketName("cms-neutron")
+                      .withPrefix("createdCalendar/");
 		ObjectListing objects = s3.listObjects(listObjectsRequest);
         try {
         	for (;;) {
@@ -59,7 +59,7 @@ public class ShowCalendars implements RequestStreamHandler {
         	    if (summaries.size() < 1) {
         	      break;
         	    }
-        	    summaries.forEach(s -> result.add("CalendarName: " + "'" + s.getKey().substring(17) + "'"));
+        	    summaries.forEach(s -> result.add("CalendarName: " + "'" + s.getKey().substring(16) + "'"));
         	    objects = s3.listNextBatchOfObjects(objects);
         	  }
         }
@@ -110,6 +110,7 @@ public class ShowCalendars implements RequestStreamHandler {
 //	        logger.log("event:" + event.toString());
 	        
 	        List<String> result = loadBucketsFromBucket();
+	        logger.log(result.toString());
 	        result.remove(0);
 			// must go in as a String.
 			
@@ -120,7 +121,6 @@ public class ShowCalendars implements RequestStreamHandler {
 				
 	    } catch (Exception e) {
 	    	logger.log(e.toString());
-
 	        responseBody.put("Result", "Unable to process input");
 	        responseJson.put("statusCode", 422);
 	        responseJson.put("body", responseBody.toString());  

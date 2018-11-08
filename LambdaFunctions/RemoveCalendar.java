@@ -37,7 +37,7 @@ public class RemoveCalendar implements RequestStreamHandler {
 	String quot = "\"";
 	
 	private AmazonS3 s3 = AmazonS3ClientBuilder.standard().build();
-	private String foldName = "kmonopoli509/createdCalendars";
+	private String foldName = "cms-neutron/createdCalendar";
 	
 	/** Load up S3 Bucket with given key */
 	public boolean checkExistence(String arg) {
@@ -123,7 +123,6 @@ public class RemoveCalendar implements RequestStreamHandler {
 			logger.log("Received parameters: " + calName);
 			
 			// must go in as a String.
-			
 			
 	        responseBody.put("Result", result);
 	        responseJson.put("statusCode", 200);
