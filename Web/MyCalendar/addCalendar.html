@@ -1,46 +1,355 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <script src="js/buttons.js"></script>
+<link rel="stylesheet" href="jquery-ui.css">
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <head>
 	<title>Add Calendar</title>
 	<link rel="import" href="calendar.html">
-</head>
+</head> -->
+<!DOCTYPE html>
+<html>
+<script type="text/javascript", src="js/buttons.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<!-- <link rel="stylesheet" href="jquery-ui.css">
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<!-- <script type="text/javascript">
+		function LoadCalendars(){
+
+	var output = document.getElementById('AvaCalendar');
+	
+	// for(var i=0; i<data.length; i++){
+	// 	jsonStr += data[i].name + '   ' + data[i].location;
+	// }
+	output.innerHTML = "Allo";
+}
+	</script> -->
+	<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../../../favicon.ico"> -->
+
+   <!--  <title>Calendar Management System</title>
+    <h1>
+	
+		Calendar Management Systems
+</h1> -->
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="starter-template.css" rel="stylesheet"> -->
+  </head>
+
+<body>		
+
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-static-top">
+      <a class="navbar-brand" href="#">CMS Alpha</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="addCalendar.html">Create Calendar</a>
+          </li>
+         <!--  <li class="nav-item">
+            <a class="nav-link" href="closeTimeslots.html">Close Timeslot</a>
+          </li> -->
+        </ul>
+        
+      </div>
+    </nav>
+
+
+    <main role="main">
+
+		<section class="jumbotron text-center bg-white">
+		<div class="container">
+		  <h1 class="jumbotron-heading"> Calendar Management System </h1>
+		</div>
+		<hr class="my-4">
+        <div id="myAlert" style="padding: 0px;"> </div>
+		
+			<!-- Result -->
+		  <div align="center" id="results" class="results" style= "display:none">
+			<h1>Results</h1>
+			<p align="center" id="resultsP"> </p>
+		</div>
+		</div>    
+		</section>
+		
+
+		<div class="album py-4 bg-light">
+        	<div class="container" align="center">
+        		<h1 class="jumbotron-heading text-muted" > Create Calendar </h1>
+				<!-- Parameters -->
+				<div id="parameters" class="parameters" >
+					<form name="parameterForm" method="post">
+					
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+					    	<span class="input-group-text" id="inputGroup-sizing-default">Calendar Name</span>
+					  	</div>
+					  	<input type="text" class="form-control" name="calendarName" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+					</div>
+
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+					    	<span class="input-group-text" id="inputGroup-sizing-default">Organizer</span>
+					  	</div>
+					  	<input type="text" class="form-control" name="organizer" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+					</div>
+					
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+					    	<span class="input-group-text" id="inputGroup-sizing-default">Start Date</span>
+					  	</div>
+					  	<input type="Date" class="form-control" id="sdInput" name="startDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+					</div>
+
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+					    	<span class="input-group-text" id="inputGroup-sizing-default">End Date</span>
+					  	</div>
+					  	<input type="Date" class="form-control" id="edInput" name="endDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+					</div>
+					
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+					    	<span class="input-group-text" id="inputGroup-sizing-default" >Start Time</span>
+					  	</div>
+					  	<input type="time" class="form-control" id="stInput" name="startTime" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="09:00" >
+					</div>	
+
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+					    	<span class="input-group-text" id="inputGroup-sizing-default" >End Time</span>
+					  	</div>
+					  	<input type="time" class="form-control"  id="etInput" name="endTime" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="17:00">
+					</div>	
+					
+
+					<div class="input-group mb-3">
+					  <div class="input-group-prepend">
+					    <span class="input-group-text" id="inputGroup-sizing-default">Duration</span>
+					  </div>
+					  <select class="custom-select" id="duration" aria-label="Example select with button addon">
+					    <option value="10"> 10 min</option>
+		            			   		<option value="15"> 15 min</option>
+		            			   		<option value="20"> 20 min</option>
+										<option value="30"> 30 min</option>
+										<option value="60"> 60 min</option>
+					  </select>
+					</div>
+					
+
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+					    	<span class="input-group-text" id="inputGroup-sizing-default">Location</span>
+					  	</div>
+					  	<input type="text" class="form-control"  name="location" id="location" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+					</div>
+
+					</form>
+					
+					<div id="buttons">
+					<button class="btn btn-info" onclick="CreateCalendar()">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalCenterTitle">Congratulation!</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body" id="modalBody">
+		        
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary" onclick="window.location.href='index.html'">Go back to home page</button>
+
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<div class="modal fade" id="loadingModal" >
+	      <div style="width: 500px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 40%; top: 50%;margin-left:-100px;margin-top:-10px">
+	        <div class="progress progress-striped active" style="margin-bottom: 0;">
+	          <div class="progress-bar progress-bar-striped bg-info progress-bar-animated role="progressbar" style="width: 100%;"></div>
+	        </div>
+	        <h5>I am running, Please wait... <br> But, if you have waited for several minutes, something might be wrong...</h5>
+	      </div>
+	    </div>
+	</main>
+    
 <body>
-	<div>
-		<p></p>
-	</div>
-	<div id="parameters">
-			<h1>Create Calendar</h1>
-			
-			<form name="parameterForm" method="post">
-			Calendar Name: <input type="text" name="calendarName" value=""><br>
-			Starting Date: <input type="text" name="startDate" value=""><br>
-			Ending Date  : <input type="text" name="endDate" value=""><br>
-			Starting Time: <input type="text" name="startTime" value=""><br>
-			Ending Time  : <input type="text" name="endTime" value=""><br>
-			Duration     : <input type="text" name="duration" value=""><br>
-			Location     : <input type="text" name="location" value=""><br>
-			</form>
-	</div>
+	
+				
+
+	
+
+	
+	
 
 
 
-	<div id="buttons">
-<!--	<button onclick="test()">Submit</button>	-->
-	<button onclick="submit()">Submit</button>	
+	
+	
+	
+	
 
-	<button onclick="window.close()">close</button>
-	</div>
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="bootstrap/assets/js/vendor/popper.min.js"></script>
+    <script src="bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    	$(function() {
+             var  endDateVar = $("#sdInput" ).on( "change", function() {
+                  // $("#timeSelect").empty();
+                  document.getElementById('edInput').setAttribute("min", document.getElementById('sdInput').value);
+                  // document.getElementById('edInput').setAttribute("max", document.getElementById('stInput').value);
+                 });
+               });
+
+    	$(function() {
+             var  endTimeVar = $("#etInput" ).on( "change", function() {
+                  // $("#timeSelect").empty();
+                  if (!document.getElementById('stInput').value === null){
+                  		infoAlert("dasdasdas");
+                  }
+                  
+                  // document.getElementById('edInput').setAttribute("max", document.getElementById('stInput').value);
+                 });
+               });
+    </script>
+
 </body>
 
-<h1>Results</h1>
-<div id="results">
-</div>
 
 
-<style type="text/css">
-	h1 {text-align: center;}
-	#buttons {text-align: center;}
-	#parameters {text-align: center;}
+
+<style>
+div.parameters {
+    text-align: center;
+}
+.jumbotron {
+    height: 200px;
+}
+div.myAlert{
+    z-index:9999; 
+}
+.navbar-fixed-top {
+    position:fixed;
+}
+
+/*body {background-color: powderblue;}
+h1   {
+    text-align: center;
+    }
+h2   {color: black; 
+	margin: auto;
+    width: 60%;
+    text-align: center;
+    padding: 10px;}
+div.parameters {
+	position: absolute;
+    top: 15%;
+    left: 35%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 500px;
+    text-align: center;
+}
+
+div.results {
+    position: absolute;
+    top: 85%;
+    left: 20%;
+    width: 1000px;
+    margin-top: -50px;
+    margin-left: -50px;
+    text-align: center;
+    border: 3px solid #73AD21;
+}
+
+div.myAlert{
+	position:fixed; 
+    top: 0px; 
+    left: 0px; 
+    width: 100%;
+    z-index:9999; 
+    border-radius:0px
+}
+#AvaCalenda {background-color: powerblue}
+p    {color: red;}
+div {background-color: powerblue}
+button {color: red}
+.main-svg {
+   background-color: transparent !important;
+}*/
 </style>
+
 </html>
+
+
+
+
+<!-- <script>
+			 $( function() {
+				 var dateFormat = "mm/dd/yy",
+					 from = $( "#from" )
+						 .datepicker({
+							 defaultDate: "+1w",
+							 changeMonth: true,
+							 numberOfMonths: 1,
+							 dateFormat: "yy-mm-dd"
+						 })
+						 .on( "change", function() {
+							 to.datepicker( "option", "minDate", getDate( this ) );
+						 }),
+					 to = $( "#to" ).datepicker({
+						 defaultDate: "+1w",
+						 changeMonth: true,
+						 numberOfMonths: 1,
+						 dateFormat: "yy-mm-dd"
+					 })
+					 .on( "change", function() {
+						 from.datepicker( "option", "maxDate", getDate( this ) );
+					 });
+				 function getDate( element ) {
+					 var date;
+					 try {
+						 date = $.datepicker.parseDate( dateFormat, element.value );
+					 } catch( error ) {
+						 date = null;
+					 }
+
+					 return date;
+				 }
+			 } );
+			 </script>
+
+			  -->

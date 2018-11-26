@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript", src="js/buttons.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<!-- <link rel="stylesheet" href="jquery-ui.css">
+<link rel="stylesheet" href="style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<!-- <script type="text/javascript">
+		function LoadCalendars(){
+
+	var output = document.getElementById('AvaCalendar');
+	
+	// for(var i=0; i<data.length; i++){
+	// 	jsonStr += data[i].name + '   ' + data[i].location;
+	// }
+	output.innerHTML = "Allo";
+}
+	</script> -->
+	<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../../../favicon.ico"> -->
+
+   <!--  <title>Calendar Management System</title>
+    <h1>
+	
+		Calendar Management Systems
+</h1> -->
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="starter-template.css" rel="stylesheet"> -->
+  </head>
+
+<body onload="loadCalSelect()" data-gr-c-s-loaded="true" style="overflow-y:scroll">	
+
+  
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-fixed-top">
+        <!-- <div class="navbar-header">
+          <a class="navbar-brand" href="#">CMS Alpha</a>
+        </div> -->
+        <a class="navbar-brand" href="#">CMS Alpha</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+          
+          <ul class="navbar-nav mr-auto">
+          <!-- <ul class="nav navbar-nav"> -->
+            <li class="nav-item active">
+              <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="addCalendar.html">Create Calendar</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="closeTimeslots.html">Close Timeslot</a>
+            </li> -->
+          </ul>
+
+          
+          <!-- &nbsp; -->
+          
+            <form class="form-inline my-2 my-lg-0">
+              <div class="input-group">
+                <select class="custom-select" id="calSelect" aria-label="Example select with button addon"></select>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-success my-2 my-sm-0" ata-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing Order" type="button" id="loadButton" onclick="LoadCalendars()">Load Calendar
+                  </button>
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="button-addon1" onclick="RemoveCalendar()">Remove Calendar
+                  </button>
+                </div>
+              </div>
+            </form>
+      </div>
+  </nav>
+  
+    
+    <!--   Main   
+    ==================================================
+    -->
+    <main role="main">
+
+      <section class="jumbotron text-center bg-white">
+        <div class="container">
+          <h1 class="jumbotron-heading"> Calendar Management System </h1>
+            <p id="curP" class="lead text-muted"> Current Calendar: null </p>
+        </div>
+        <hr class="my-4">
+        
+          <!-- Result -->
+          <div id="results" class="results" style= "display:block">
+            <h1> Results </h1>
+            <p align="center" id="resultsP" class="lead text-muted"> </p>
+            <div id="myAlert" style="padding: 0px;"> </div>
+          </div>
+        </div>    
+      </section>
+  
+
+        <div class="album py-5 bg-light" style="display:none" id="album">
+          
+          <div class="container">
+
+            <div class="row" >
+
+              <div class="col-md-4">
+                    <!-- Schedule Meeting -->
+                    <div id="scheduleMeeting" class="scheduleMeeting" style= "display:none"> 
+                        <h2 align="center">Schedule Meeting</h2>
+                        <form name="scheduleForm" method="post">
+                          <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Meet Date</span>
+                            </div>
+                            <input type="Date" class="form-control" id="meetDate" name="meetDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                            <span class="validity"></span>
+                          </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Meet Time</span>
+                          </div>
+                          <select class="custom-select" id="meetTimeSelect" aria-label="Example select with button addon">
+                            <option> It will be filled after you select a date!</option>
+                          </select>
+                        </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Who To Meet</span>
+                            </div>
+                            <input type="text" class="form-control" id="whotomeet" name="who" aria-label="Sizing example input" placeholder="someone's name" aria-describedby="inputGroup-sizing-default">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Location</span>
+                            </div>
+                            <input type="text" class="form-control" id="locationInput" name="location" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                        </div>
+                        </form>
+                        <button class="btn btn-info" onclick="ScheduleMeeting()">Schedule</button>
+                    </div>
+                    <br>
+            
+                    <!-- Close Timeslot -->
+                    <div id="closeTS" class="closeTS" style= "display:none">
+                      <h2> Close Timeslot </h2>
+                      
+                      <div class="input-group mb-3">
+                          <select class="custom-select" id="ctsSelect" aria-label="Example select with button addon" style= "display:block">
+                            <option selected value="0"> Choose a way to close </option>
+                            <option value="1"> Close An Indivisual Timeslot</option>
+                            <option value="2"> Close All Timeslots on A Given Date</option>
+                            <option value="3"> Close All Timeslots at A Given Time</option>
+                            <option value="4"> Close All Timeslots on A Given Day of Week and Time</option>
+                           </select>
+                          <div class="input-group-prepend">
+                         
+                          </div>
+                      </div>
+
+                      <div id="cit" style="display: none">
+                        <form name="citForm" method="post">
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Date</span>
+                            </div>
+                            <input type="Date" class="form-control" id="citDate" name="citDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                          </div>
+
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Time</span>
+                            </div>
+                            <select class="custom-select" id="citTimeSelect" aria-label="Example select with button addon">
+                              <option> It will be filled after you select a date!</option>
+                            </select>
+                          </div>
+                        </form>
+                        <button class="btn btn-info" onclick="CloseCIT()">Submit</button>
+                      </div>
+
+                      <div id="catd" style="display: none">
+                        <form name="catdForm" method="post">
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Date</span>
+                            </div>
+                            <input type="Date" class="form-control" id="catdDate" name="catdDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                          </div>
+                        </form>
+                        <button class="btn btn-info" onclick="CloseCATD()">Submit</button>
+                      </div>
+
+                      <div id="catt" style="display: none">
+                        <form name="cattForm" method="post">
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Time</span>
+                            </div>
+                            <select class="custom-select" id="cattTimeSelect" aria-label="Example select with button addon">
+                            </select>
+                          </div>
+                        </form>
+                        <button class="btn btn-info" onclick="CloseCATT()">Submit</button>
+                      </div>
+
+                      <div id="catdwt" style="display: none">
+                        <form name="catdwtForm" method="post">
+                          <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Day</span>
+                              </div>
+                              <select class="custom-select" id="catdwtDaySelect" aria-label="Example select with button addon">
+                                <option value="1"> Sunday </option>
+                                <option value="2"> Monday </option>
+                                <option value="3"> Tuesday </option>
+                                <option value="4"> Wednesday </option>
+                                <option value="5"> Thursday </option>
+                                <option value="6"> Friday </option>
+                                <option value="7"> Saturday </option>
+                              </select>
+                          </div>
+
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Time</span>
+                            </div>
+                            <select class="custom-select" id="catdwtTimeSelect" aria-label="Example select with button addon">
+                            </select>
+                          </div>
+                        </form>
+                        <button class="btn btn-info" onclick="CloseCATDWT()">Submit</button>
+                      </div>
+                    </div>        
+
+              </div>
+              
+              <div class="col-md-7 offset-md-1">
+                    <!-- Show meeting -->
+                    <div  id="showMeetings"  class="showMeetings" style= "display:none"> 
+                      <h2>Meeting Board</h2>
+                        
+                          <div class="input-group mb-3">
+                            <input type="Date" class="form-control" id="dailyMeetings" name="dailyMeetings" aria-describedby="button-addon1">
+                            <div class="input-group-prepend">
+                            <button class="btn btn-info" type="button" id="button-addon1" onclick="ShowDailyMeetings()">Daily Meetings</button>
+                            <input type="Month" class="form-control" id="monthlyMeetings" name="monthlyMeetings" aria-describedby="button-addon1">
+                            <div class="input-group-prepend">
+                            <button class="btn btn-info" type="button" id="button-addon1" onclick="ShowMonthlyMeetings()">Monthly Meetings</button>
+                            </div>
+                            </div>
+                          </div>
+
+                          <div class="input-group mb-3" >
+                            <!-- <input type="Month" class="form-control" id="monthlyMeetings" name="monthlyMeetings" aria-describedby="button-addon1">
+                            <div class="input-group-prepend">
+                            <button class="btn btn-info" type="button" id="button-addon1" onclick="ShowMonthlyMeetings()">Show Monthly Meetings</button>
+                            </div> -->
+                            
+                              <select id="meetingSelect" size="3" class="meetingSelect"></select>
+                              <button class="btn-xlarge btn-info" onclick="CancelMeeting()" class="meetingSelectButton">Cancel Meeting</button>
+                            
+                          </div>
+                          <button class="btn btn-info" onclick="ShowAllMeetings()">Show All Meetings</button>
+                        
+                    </div>
+                    
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+        
+        
+
+
+        <div class="modal fade" id="noCalendarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Opps!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="modalBody">
+                There is no available calendar exists, do you want to create one?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='addCalendar.html'">Yes</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+          
+        <div class="modal fade" id="loadingModal">
+          <div style="width: 500px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 40%; top: 50%;margin-left:-100px;margin-top:-10px">
+            <div class="progress progress-striped active" style="margin-bottom: 0;">
+              <div class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar" style="width: 100%;"></div>
+            </div>
+            <h5>I am running, Please wait... <br> But, if you have waited for several minutes, something might be wrong...</h5>
+          </div>
+        </div>
+
+    </main>
+
+   
+    
+
+<!-- Bootstrap core JavaScript
+    ==================================================
+    Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="bootstrap/assets/js/vendor/popper.min.js"></script>
+    <script src="bootstrap/dist/js/bootstrap.min.js"></script>  
+    <script type="text/javascript">
+      $(function() {
+       var  meetDateVar = $("#meetDate" ).on( "change", function() {
+            // $("#timeSelect").empty();
+            RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
+           });
+         });
+
+
+      $(function() {
+         var  ctsType = $("#ctsSelect" ).on( "change", function() {
+              if (document.getElementById('ctsSelect').value === "0"){
+                helper();
+              }
+              if (document.getElementById('ctsSelect').value === "1"){
+                helper();
+                document.getElementById('citDate').setAttribute("min", localStorage.getItem('currentCalSD'));
+                document.getElementById('citDate').setAttribute("max", localStorage.getItem('currentCalED'));
+                document.getElementById("cit").setAttribute("style", "display:block");  
+              }
+              if (document.getElementById('ctsSelect').value === "2"){
+                helper();
+                document.getElementById('catdDate').setAttribute("min", localStorage.getItem('currentCalSD'));
+                document.getElementById('catdDate').setAttribute("max", localStorage.getItem('currentCalED'));
+                document.getElementById("catd").setAttribute("style", "display:block");  
+              }
+              if (document.getElementById('ctsSelect').value === "3"){
+                helper();
+                RetrieveNonCloseTimeslot({calID:localStorage.getItem("currentCalID"), date:"",
+                                              ctsOpt: "cattTimeSelect"});
+                document.getElementById("catt").setAttribute("style", "display:block");  
+              }
+              if (document.getElementById('ctsSelect').value === "4"){
+                helper();
+                RetrieveNonCloseTimeslot({calID:localStorage.getItem("currentCalID"), date:"",
+                                              ctsOpt: "catdwtTimeSelect"});
+                document.getElementById("catdwt").setAttribute("style", "display:block");  
+              }
+             });
+       });
+          
+       $(function() {
+         var  meetDateVar = $("#citDate" ).on( "change", function() {
+              RetrieveNonCloseTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('citDate').value,
+                                        ctsOpt: "citTimeSelect"});
+
+             });
+           });
+        
+    </script>
+
+
+</body>
+
+
+<style>
+.btn-xlarge {
+    /*padding: 18px 100px;*/
+    width: 700px;
+    
+    font-size: 20px; 
+    line-height: normal;
+    -webkit-border-radius: 8px;
+       -moz-border-radius: 8px;
+            border-radius: 8px;
+}
+
+.jumbotron {
+    height: 350px;
+}
+
+/*.navbar-fixed-top {
+    position:fixed;
+}*/
+/*body {background-color: bg-light;}*/
+/*h1   {color: black; 
+	margin: auto;
+    width: 60%;
+    text-align: center;
+    }
+h2   {color: black; 
+	margin: auto;
+    width: 60%;
+    text-align: center;
+    }*/
+
+/*div.alert{
+  position: fixed;
+    top: 15%;
+    right: 2%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 450px;
+    text-align: center;
+}*/
+
+/*div.results {
+    position: absolute;
+    top: 15%;
+    left: 4%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 450px;
+    text-align: center;
+    border: 3px solid #73AD21;
+}*/
+
+/*div.showMeetings {
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 400px;
+    text-align: center;
+}
+
+div.scheduleMeeting {
+    position: absolute;
+    top: 30%;
+    left: 4%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 500px;
+    text-align: center;
+}
+
+div.closeTS {
+    position: absolute;
+    top: 30%;
+    right: 1%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 500px;
+    text-align: center;
+}
+
+select.meetingSelect{
+  width: 400px;
+  height: 300px;
+  text-align: center;
+}*/
+
+/*div.myAlert{
+  position:fixed; 
+    top: 0px; 
+    left: 0px; 
+    width: 100%;
+    z-index:999; 
+    border-radius:5px
+
+}*/
+
+/*body { padding-top: 70px; }*/
+button.meetingSelectButton{
+  width: 700px;
+}
+
+div.showMeetings {
+    text-align: center;
+}
+
+div.scheduleMeeting {
+    text-align: center;
+}
+
+div.closeTS {
+    text-align: center;
+}
+
+select.meetingSelect{
+  width: 700px;
+  height: 300px;
+  text-align: center;
+}
+
+</style>
+</html>
