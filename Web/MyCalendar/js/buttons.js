@@ -33,13 +33,17 @@ function target_popup2(calName) {
     this.target = 'POPUPW';
 }
 
+function RemoveCalendarTrigger(){
+	$('#removeCalendarModal').modal();
+}
 
 function RemoveCalendar(){
+	$('#removeCalendarModal').modal('toggle');
 	if ( document.getElementById('calSelect').value=== "0") {
 		$('#noCalendarModal').modal();
 		return;
 	}
-	showModal();
+	loadTimeout();
 	var results = document.getElementById('resultsP');
 	var calName = document.getElementById('calSelect').value;
 	results.innerHTML = `I am running...`;
@@ -68,9 +72,11 @@ function RemoveCalendar(){
 	   	document.getElementById("scheduleMeeting").setAttribute("style", "display:none");
 	   	document.getElementById("showMeetings").setAttribute("style", "display:none");
 	   	document.getElementById("closeTS").setAttribute("style", "display:none");
+	   	document.getElementById("addremovedate").setAttribute("style", "display:none");
 		}
 		$("#myAlert").append('<div class="alert alert-success alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Congratulation!</strong> The calendar: ' + calName + ' has been removed!</div>');
-		hideModal();
+		
+		document.getElementById("loader").style.display = "none";
 	} else {
 		results.innerHTML = `Failed to connect!`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -80,6 +86,12 @@ function RemoveCalendar(){
 
 
 function CreateCalendar(){
+	var elem = document.getElementById('info');
+	if (elem != null){
+		elem.parentNode.removeChild(elem);
+	}
+    
+
 	var results = document.getElementById('resultsP');
 	var div_para = document.parameterForm;
 	// history.innerHTML = history.innerHTML + `<br>${calName} </b>`;
@@ -92,13 +104,19 @@ function CreateCalendar(){
 	var duration = div_para.duration.value;
 	var location = div_para.location.value;
 	var organizer = div_para.organizer.value;
+	// warningAlert(document.getElementById("sdInput").value);
+	// warningAlert(document.getElementById("edInput").value);
+	// warningAlert(startTime);
+	// warningAlert(endTime);
+	// return;
 	if (calName === "" || startDate === "" || endDate === "" || startTime === "" || endTime === "" || duration === "" || location === "" || organizer === "") {
 		infoAlert("Please complete all forms!");
 		results.innerHTML = `Please complete all forms!`;
 		results.innerHTML = results.innerHTML + '<br>End.</b>';
 		return;
 	}
-	showModal();
+	
+	loadTimeout();
   	var create_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/create-calendar"
 	var data = {};
 	data["calName"] = calName;
@@ -123,32 +141,40 @@ function CreateCalendar(){
 	  var response = js["Result"];
 	  var info = js["CalendarInfo"];
 	  // results.innerHTML = `${response}`;
-	  hideModal();
+	  
+	  hideLoader();
+
 	  if (response === "1"){
-	  	$("#modalBody").append('Calendar: "' + calName + '" has been created successfully!<br> The calendar information is:<br>' + info);
+	  	$('.alert').alert('close');
+	  	$("#modalBody").append(
+	  		'<div id="info">' + 
+	  		'Calendar: "' + calName + '" has been created successfully!<br> The calendar information is:<br>' + info +
+	  		'</div>'
+	  		);
 	  	$('#exampleModalCenter').modal();
+	  	
 	  	// results.innerHTML = results.innerHTML + `<br>${info}</b>`;
 	  }
 	  else if (response === "0"){
-	  	$("#myAlert").append('<div class="alert alert-warning alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Failed to Create!</strong> The calendar: ' + calName + ' existed!</div>');
+	  	warningAlert("The calendar: " + calName + " existed!");
 	  }
 	  else if (response === "-1"){
-	  	$("#myAlert").append('<div class="alert alert-warning alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Failed to Create!</strong> The End Time seems earlier than or equal to Start Time!</div>');
+	  	warningAlert("The End Time seems earlier than or equal to Start Time!");
 	  }
 	  else if (response === "-2"){
-	  	$("#myAlert").append('<div class="alert alert-warning alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Failed to Create!</strong> The End Date seems earlier than Start Date!</div>');
+	  	warningAlert("The End Date seems earlier than Start Date!");
 	  }
 	  // results.innerHTML = results.innerHTML + `<br>---------------------</b>`;
 	  //updateHistory(arg1, arg2, xhr.responseText);
 	} else {
-		$("#myAlert").append('<div class="alert alert-danger alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Bit Problem!</strong> Failed to connect to server!</div>');
+		$("#myAlert").append('<div class="alert alert-danger alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Big Problem!</strong> Failed to connect to server!</div>');
 	  //updateHistory(arg1, arg2, "N/A");
 	}
 	};
 }
 
 // function ShowCalendars(){
-// 	showModal();
+// 	
 // 	var results = document.getElementById('resultsP');
 // 	results.innerHTML = `I am running...`;
 // 	var show_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/show-calendar";
@@ -167,7 +193,7 @@ function CreateCalendar(){
 // 	  results.innerHTML = `Created calendars: ${response}`;
 // 	  results.innerHTML = results.innerHTML + '<br>End.</b>';
 
-// 	  hideModal();
+// 	  
 // 	} else {
 // 		results.innerHTML = `<b>Failed to connect!</b>`;
 // 	  //updateHistory(arg1, arg2, "N/A");
@@ -194,7 +220,8 @@ function ScheduleMeeting(){
 		return;
 	}
 
-	showModal();
+	
+	loadTimeout()
 
 	var calID = localStorage.getItem("currentCalID");
 	var schedule_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/schedule-meeting";
@@ -219,7 +246,7 @@ function ScheduleMeeting(){
 	  var timeSelect = document.getElementById('meetTimeSelect');
 	  ShowAllMeetings();
 	  results.innerHTML = `${response}`;
-	  $("#myAlert").append('<div class="alert alert-success alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Congratulation!</strong> ' + response +'.</div>');
+	  successAlert(response);
 	  if (response !== "Failed to schedule meeting!"){
 	  	$('#meetTimeSelect :selected').remove();
 	  }
@@ -229,7 +256,8 @@ function ScheduleMeeting(){
 		opt.innerHTML = "No Available TimeSlot";
 		timeSelect.appendChild(opt);
 	  }
-	  hideModal();
+	  
+	  document.getElementById("loader").style.display = "none";
 	} else {
 		results.innerHTML = `Failed to connect!`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -238,7 +266,8 @@ function ScheduleMeeting(){
 }
 
 function CancelMeeting(){
-	showModal();
+	
+	loadTimeout();
 	var results = document.getElementById('resultsP');
 	var calID = localStorage.getItem("currentCalID");
 	var meetingID = document.getElementById('meetingSelect').value;
@@ -274,7 +303,8 @@ function CancelMeeting(){
 	  	RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
 	  }
 	  successAlert("The meeting has been canceled!");
-	  hideModal();
+	  
+	  document.getElementById("loader").style.display = "none";
 	} else {
 		results.innerHTML = `Failed!`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -297,7 +327,8 @@ function CloseCIT(){
 		infoAlert(`You must select both date and time to close!`);
 		return;	
 	}
-	showModal();
+	
+	loadTimeout();
 	var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/close-ts";
 	var data = {};
 	data["calID"] = calID;
@@ -330,7 +361,8 @@ function CloseCIT(){
 	  }
 	  document.getElementById('citTimeSelect').options[document.getElementById('citTimeSelect').selectedIndex].setAttribute("disabled", "disabled");
 	  $('#citTimeSelect option:selected').next().attr('selected', 'selected');
-	  hideModal();
+	  successAlert("You have closed the timeslot on " + date + " at " + time + "!");
+	  document.getElementById("loader").style.display = "none";
 	} else {
 		results.innerHTML = `Failed!`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -351,7 +383,8 @@ function CloseCATD(){
 		infoAlert("You must select a date to close!");
 		return;	
 	}
-	showModal();
+	
+	loadTimeout();
 	
 	var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/close-ts";
 	var data = {};
@@ -371,7 +404,9 @@ function CloseCATD(){
 	  var response = js["Result"];
 	  results.innerHTML = `${response}`;
 	  if (response == "Already Closed."){
-	  	alert("This date had been closed!");	
+	  	warningAlert("This date has been closed!");
+	  	hideLoader();
+	  	return;
 	  }
 	  document.getElementById('meetDate').value = '';
 	  var timeSelect = document.getElementById('meetTimeSelect');
@@ -380,7 +415,8 @@ function CloseCATD(){
 	  opt.innerHTML = "It will be filled after you select a date!";
 	  timeSelect.appendChild(opt);
 	  results.innerHTML += `<br>End.`;
-	  hideModal();
+	  successAlert("You have closed all timeslots on " + date + "!");
+	  document.getElementById("loader").style.display = "none";
 	} else {
 		results.innerHTML = `Failed!`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -401,7 +437,8 @@ function CloseCATT(){
 		infoAlert("You must select a timeslot to close!");
 		return;	
 	}
-	showModal();
+	
+	loadTimeout();
 	
 	var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/close-ts";
 	var data = {};
@@ -420,13 +457,14 @@ function CloseCATT(){
 	  var js = JSON.parse(xhr.responseText);
 	  var response = js["Result"];
 	  results.innerHTML = `${response}`;
-	  document.getElementById('cattTimeSelect').options[document.getElementById('cattTimeSelect').selectedIndex].setAttribute("disabled", "disabled");
-	  $('#cattTimeSelect option:selected').next().attr('selected', 'selected');
+	  // document.getElementById('cattTimeSelect').options[document.getElementById('cattTimeSelect').selectedIndex].setAttribute("disabled", "disabled");
+	  // $('#cattTimeSelect option:selected').next().attr('selected', 'selected');
 	  results.innerHTML += `<br>End.`;
 	  if (document.getElementById('meetDate').value !== ''){
 	  	RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
 	  }
-	  hideModal();
+	  successAlert("You have closed all timeslots at " + time + "!");
+	  document.getElementById("loader").style.display = "none";
 	} else {
 		results.innerHTML = `Failed!`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -447,7 +485,8 @@ function CloseCATDWT(){
 	// 	results.innerHTML += `<br>End.`;
 	// 	return;	
 	// }
-	showModal();
+	
+	loadTimeout();
 	var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/close-ts";
 	var data = {};
 	data["calID"] = calID;
@@ -473,7 +512,8 @@ function CloseCATDWT(){
 	  timeSelect.appendChild(opt);
 	  // document.getElementById('catdwtTimeSelect').options[document.getElementById('catdwtTimeSelect').selectedIndex].setAttribute("disabled", "disabled");
 	  results.innerHTML = `${response}<br>End.`;
-	  hideModal();
+	  successAlert("You have closed all timeslots on " + document.getElementById('catdwtDaySelect').options[document.getElementById('catdwtDaySelect').selectedIndex].text + " at " + time + "!");
+	  document.getElementById("loader").style.display = "none";
 	} else {
 		results.innerHTML = `Failed!`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -481,7 +521,159 @@ function CloseCATDWT(){
 	};
 }
 
+function RemoveDate(){
+	var results = document.getElementById('resultsP');
+	var calID = localStorage.getItem("currentCalID");
+	var date = document.getElementById('modifyDate').value;
+	results.innerHTML = `I am running...<br>`;
+	loadTimeout();
+
+	var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/remove-date";
+	var data = {};
+	data["calID"] = calID;
+	data["date"] = date;
+	var js = JSON.stringify(data);
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	// send the collected data as JSON
+	xhr.send(js);
+	xhr.onloadend = function () {
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+		//nowtime();
+		var js = JSON.parse(xhr.responseText);
+		var response = js["Result"];
+
+		if (response === "Succeed"){
+			document.getElementById('meetDate').value = '';
+			var timeSelect = document.getElementById('meetTimeSelect');
+			removeOptions(timeSelect);
+			var opt = document.createElement('option');
+			opt.innerHTML = "It will be filled after you select a date!";
+			timeSelect.appendChild(opt);	
+
+			document.getElementById('citDate').value = '';
+			var timeSelect = document.getElementById('citTimeSelect');
+			removeOptions(timeSelect);
+			var opt = document.createElement('option');
+			opt.innerHTML = "It will be filled after you select a date!";
+			timeSelect.appendChild(opt);
+
+			document.getElementById('catdDate').value = '';
+			document.getElementById('dailyMeetings').value = '';
+
+			var storedData = localStorage.getItem("currentCalAllDates");
+			if (storedData) {
+			    dateArray = JSON.parse(storedData);
+			} 
+			dateArray.splice( dateArray.indexOf(date), 1 );
+			localStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
+
+			// $("#meetDate").datepicker("destroy");
+			meetDateDatepiker();
+			// meetDateChangeTime();
+			dailyMeetingsDatepiker();
+			citDateDatepiker();
+			// citChangeTime();
+			catdDateDatepiker();
+			document.getElementById("loader").style.display = "none";
+			results.innerHTML = `${response}<br>End.`;
+			successAlert(response + " to remove date: " + date);
+		}
+		else{
+			warningAlert(response);
+			hideLoader();
+		}
+	} else {
+		results.innerHTML = `Failed!`;
+	  //updateHistory(arg1, arg2, "N/A");
+	}
+	};
+}
+
+function AddDate(){
+	var results = document.getElementById('resultsP');
+	var calID = localStorage.getItem("currentCalID");
+	var date = document.getElementById('modifyDate').value;
+	var startDate = localStorage.getItem("currentCalSD");
+	var endDate = localStorage.getItem("currentCalED");
+	var startTime = localStorage.getItem("currentCalST");
+	var endTime	= localStorage.getItem("currentCalET");
+	var duration = localStorage.getItem("currentCalDuration");
+	results.innerHTML = `I am running...<br>`;
+	
+	// if (day === "" || time === "No Available TimeSlot" || time === ""){
+	// 	results.innerHTML += `You must select both date and time to close.`;
+	// 	results.innerHTML += `<br>End.`;
+	// 	return;	
+	// }
+	
+	loadTimeout();
+	var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/add-date";
+	var data = {};
+	data["calID"] = calID;
+	data["date"] = date;
+	data["startDate"] = startDate;
+	data["endDate"] = endDate;
+	data["startTime"] = startTime;
+	data["endTime"] = endTime;
+	data["duration"] = duration;
+
+	var js = JSON.stringify(data);
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	// send the collected data as JSON
+	xhr.send(js);
+	// This will process results and update HTML as appropriate. 
+	xhr.onloadend = function () {
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+	  //nowtime();
+	  var js = JSON.parse(xhr.responseText);
+	  var response = js["Result"];
+	  
+	  if (response === "Succeed"){
+	  	document.getElementById('meetDate').value = '';
+		var timeSelect = document.getElementById('meetTimeSelect');
+		removeOptions(timeSelect);
+		var opt = document.createElement('option');
+		opt.innerHTML = "It will be filled after you select a date!";
+		timeSelect.appendChild(opt);
+		// var dateArray = [];
+		// for (i in js["ArrayList"]){
+		// 	dateArray.push(js["ArrayList"][i]);
+		// }	
+		var storedData = localStorage.getItem("currentCalAllDates");
+		if (storedData) {
+		    dateArray = JSON.parse(storedData);
+		} 
+		dateArray.push(date);
+		localStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
+		
+		// $("#meetDate").datepicker("destroy");
+		meetDateDatepiker();
+	    // meetDateChangeTime();
+	    dailyMeetingsDatepiker();
+    	citDateDatepiker();
+    	// citChangeTime();
+    	catdDateDatepiker();
+		successAlert(response + " to add date: " + date);
+	  }
+	  else{
+	  	warningAlert(response);
+	  }
+	  results.innerHTML = `${response}<br>End.`;
+	  
+	  document.getElementById("loader").style.display = "none";
+	} else {
+		results.innerHTML = `Failed!`;
+	  //updateHistory(arg1, arg2, "N/A");
+	}
+	};
+}
+
+
+
 function LoadCalendars(){
+	localStorage.clear();
 	// var calendarNameArr = ["Professional", "Private"];
 	// plotLoadCalendars(calendarNameArr, locationArr);
 	var results = document.getElementById('resultsP');
@@ -491,7 +683,8 @@ function LoadCalendars(){
 		$('#noCalendarModal').modal();
 		return;
 	}
-	showModal();
+	
+	loadTimeout();
 	var load_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/load-calendar";
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", load_url + "?calName=" + calName, true);
@@ -512,26 +705,27 @@ function LoadCalendars(){
 	  var location = js["location"];
 	  var duration = js["duration"];
 	  if (response == "1"){
-	  	document.getElementById("curP").innerHTML = "Current Calendar: " + `"${calName}"` + " range from " + `${startDate}` + 
+	  	document.getElementById("curP").innerHTML = "Current Calendar: " + `"${calName}"` + " default range from " + `${startDate}` + 
 	  												" to " + `${endDate}`;
 	  	// results.innerHTML += "<br>Succeed!";
 	  	successAlert("You have loaded calendar: " + calName + ".");
 	  	results.innerHTML = results.innerHTML + '<br>End.</b>';
 
-	  	
 	  	document.getElementById('locationInput').setAttribute("value", location);
 		document.getElementById('meetDate').setAttribute("min", startDate);
 		document.getElementById('meetDate').setAttribute("max", endDate);
-		document.getElementById('dailyMeetings').setAttribute("min", startDate);
-		document.getElementById('dailyMeetings').setAttribute("max", endDate);
-		document.getElementById('monthlyMeetings').setAttribute("min", startDate.substring(0,7));
-		document.getElementById('monthlyMeetings').setAttribute("max", endDate.substring(0,7));
+		// document.getElementById('dailyMeetings').setAttribute("min", startDate);
+		// document.getElementById('dailyMeetings').setAttribute("max", endDate);
+		// document.getElementById('monthlyMeetings').setAttribute("min", startDate.substring(0,7));
+		// document.getElementById('monthlyMeetings').setAttribute("max", endDate.substring(0,7));
 		document.getElementById("scheduleMeeting").setAttribute("style", "display:block");
 		document.getElementById("showMeetings").setAttribute("style", "display:block");
 		document.getElementById("closeTS").setAttribute("style", "display:block");
 		document.getElementById("album").setAttribute("style", "display:block");
 		helper();
 		document.getElementById('ctsSelect').selectedIndex = "0";
+		// document.getElementById('calSelect').options[document.getElementById('calSelect').selectedIndex].setAttribute("disabled", "disabled");
+		// $('#calSelect option:selected').next().attr('selected', 'selected');
 		if (typeof(Storage) !== "undefined") {
 			// Store
 			localStorage.setItem("currentCalID", calID);
@@ -541,22 +735,37 @@ function LoadCalendars(){
 			localStorage.setItem("currentCalST", startTime);
 			localStorage.setItem("currentCalET", endTime);
 			localStorage.setItem("currentCalDuration", duration);
+
+			var dateArray = [];
+			for (i in js["ArrayList"]){
+				dateArray.push(js["ArrayList"][i]);
+			}	
+			localStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
+
+        	meetDateDatepiker();
+	    	meetDateChangeTime();
+	    	dailyMeetingsDatepiker();
+	    	citDateDatepiker();
+	    	citChangeTime();
+	    	catdDateDatepiker();
 			ShowAllMeetings();
-			} else {
-				document.getElementById("resultsP").innerHTML = "Sorry, your browser does not support Web Storage...";
-				warningAlert("Sorry, your browser does not support Web Storage...Please change a browser.");
-		}
-	   }
-	   else{
+		} 
+		else {
+			document.getElementById("resultsP").innerHTML = "Sorry, your browser does not support Web Storage...";
+			warningAlert("Sorry, your browser does not support Web Storage...Please change a browser.");
+			}
+	   	}
+	   	else {
 	   		document.getElementById("curP").innerHTML = "null";
 	   		localStorage.clear();
 	   		document.getElementById("scheduleMeeting").setAttribute("style", "display:none");
 	   		document.getElementById("showMeetings").setAttribute("style", "display:none");
 	   		document.getElementById("closeTS").setAttribute("style", "display:none");
+	   		document.getElementById("addremovedate").setAttribute("style", "display:none");
 	   		results.innerHTML = `${response}`;
-
-	   }
-		hideModal();										
+	   	}
+				
+		document.getElementById("loader").style.display = "none";								
 	} else {
 		results.innerHTML = `Failed to connect!`;
 	}
@@ -564,6 +773,7 @@ function LoadCalendars(){
 }
 
 function RetrieveOpenTimeslot(context){
+	$('.alert').alert('close');
 	if (context.date == ''){
 		var timeSelect = document.getElementById('meetTimeSelect');
 		removeOptions(timeSelect);
@@ -572,7 +782,8 @@ function RetrieveOpenTimeslot(context){
 		mmeetTimeSelect.appendChild(opt);
 		return;
 	}
-	showModal();
+	
+	loadTimeout();
     var retrieve_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/retrieve-ts";
     var xhr = new XMLHttpRequest();	
     xhr.open("GET", retrieve_url + "?calID=" + context.calID + "&avaiDate=" + context.date + "&type=" + "Open", true);
@@ -590,8 +801,9 @@ function RetrieveOpenTimeslot(context){
 
 		if (js["Result"] === "Close"){
 				// alert("This date is not available!");	
-				warningAlert("This date is not available!");
+				warningAlert("This date: "+ context.date + " has been closed!");
 				document.getElementById("resultsP").innerHTML += "<br>End.</b>";
+				hideLoader();
 				return;
 		}
 
@@ -617,7 +829,8 @@ function RetrieveOpenTimeslot(context){
 			timeSelect.appendChild(opt);
 
 		}
-		hideModal();
+		
+		document.getElementById("loader").style.display = "none";
 		document.getElementById("resultsP").innerHTML += "<br>End.</b>";
 
       
@@ -628,6 +841,7 @@ function RetrieveOpenTimeslot(context){
 }
 
 function RetrieveNonCloseTimeslot(context){
+	$('.alert').alert('close');
     var retrieve_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/retrieve-ts";
     var xhr = new XMLHttpRequest();	
     if (context.date === ""){
@@ -636,8 +850,8 @@ function RetrieveNonCloseTimeslot(context){
     else{
     	xhr.open("GET", retrieve_url + "?calID=" + context.calID + "&avaiDate=" + context.date + "&type=" + "NonClose", true);
     }
-    showModal();
-
+    
+    loadTimeout();
     document.getElementById("resultsP").innerHTML = "I am running...";
     document.getElementById("resultsP").innerHTML += "<br>I am filling available times...</b>";
     // send the collected data as JSON
@@ -653,9 +867,10 @@ function RetrieveNonCloseTimeslot(context){
 		}
 		
 		if (js["Result"] === "Close"){
-			warningAlert("This date is not available!")
+			warningAlert("This date: "+ context.date + " has been closed!");
 			// alert("This date is not available!");
 			document.getElementById("resultsP").innerHTML += "<br>End.</b>";
+			hideLoader();
 			return;
 		}
 
@@ -670,8 +885,8 @@ function RetrieveNonCloseTimeslot(context){
 			timeSelect.appendChild(opt);
 		}
 		document.getElementById("resultsP").innerHTML += "<br>End.</b>";
-		hideModal();
-      
+		
+      	document.getElementById("loader").style.display = "none";
     } else {
         document.getElementById("resultsP").innerHTML = `Failed to connect!`;
     }
@@ -690,8 +905,8 @@ function ShowAllMeetings(){
     var xhr = new XMLHttpRequest();	
     var calID = localStorage.getItem("currentCalID");
 
-    showModal();
-
+    
+    loadTimeout();
     xhr.open("GET", url + "?calID=" + calID, true);
 
     // send the collected data as JSON
@@ -727,7 +942,8 @@ function ShowAllMeetings(){
 			return;
 		}
 		document.getElementById("resultsP").innerHTML += "<br>End.</b>";
-		hideModal();
+		
+		document.getElementById("loader").style.display = "none";
       
     } else {
         document.getElementById("resultsP").innerHTML = `Failed to connect!`;
@@ -749,7 +965,8 @@ function ShowDailyMeetings(){
     	return;	
     }
     
-    showModal();
+    
+    loadTimeout();
 
     xhr.open("GET", url + "?calID=" + calID + "&meetDate=" + meetDate , true);
     
@@ -764,8 +981,9 @@ function ShowDailyMeetings(){
 		$('#meetingSelect').empty();
 		// var selectSize = 0;
 		if (js["ArrayList"].length === 0){
-			$("#myAlert").append('<div class="alert alert-info alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Heads Up!</strong> There is no scheduled meeting on ' + meetDate + '.</div>');
+			infoAlert("There is no scheduled meeting on " + meetDate);
 			document.getElementById("resultsP").innerHTML += "<br> There is no scheduled meeting on " + `${meetDate}.` ;
+			hideLoader();
 			return;
 		}
 		for (var i in js["ArrayList"]){
@@ -783,7 +1001,8 @@ function ShowDailyMeetings(){
 			meetingSelect.appendChild(opt);
 		}
 		document.getElementById("resultsP").innerHTML += "<br>End.</b>";
-		hideModal();
+		successAlert("You have loaded all meetings on " + meetDate + "!");
+		document.getElementById("loader").style.display = "none";
       
     } else {
         document.getElementById("resultsP").innerHTML = `Failed to connect!`;
@@ -803,7 +1022,8 @@ function ShowMonthlyMeetings(){
     	warningAlert("Please choose a month!");
     	return;	
     }
-    showModal();
+    
+    loadTimeout();
 
     xhr.open("GET", url + "?calID=" + calID + "&yearMonth=" + yearMonth, true);
     
@@ -818,8 +1038,9 @@ function ShowMonthlyMeetings(){
 		$('#meetingSelect').empty();
 		// var selectSize = 0;
 		if (js["ArrayList"].length === 0){
-			$("#myAlert").append('<div class="alert alert-info alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Heads Up!</strong> There is no scheduled meeting in ' + yearMonth + '.</div>');
+			infoAlert("There is no scheduled meeting in " + yearMonth + "!");
 			document.getElementById("resultsP").innerHTML += "<br> There is no scheduled meeting in " + `${yearMonth}.` ;
+			hideLoader();
 			return;
 		}
 		for (var i in js["ArrayList"]){
@@ -837,7 +1058,8 @@ function ShowMonthlyMeetings(){
 			meetingSelect.appendChild(opt);
 		}
 		document.getElementById("resultsP").innerHTML += "<br>End.</b>";
-		hideModal();
+		successAlert("You have loaded all meetings in " + yearMonth + "!");
+		document.getElementById("loader").style.display = "none";
       
     } else {
         document.getElementById("resultsP").innerHTML = `Failed to connect!`;
@@ -846,7 +1068,8 @@ function ShowMonthlyMeetings(){
 }
 
 function loadCalSelect(){
-	showModal();
+	loadTimeout();
+	localStorage.setItem("flag", false);
 	var results = document.getElementById('resultsP');
 	results.innerHTML = `I am running...`;
 	var show_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/show-calendar";
@@ -861,19 +1084,20 @@ function loadCalSelect(){
 	xhr.onloadend = function () {
 	if (xhr.readyState == XMLHttpRequest.DONE) {
 		
-	  //nowtime();
-	  var js = JSON.parse(xhr.responseText);
-	  var response = js["Result"];
-	  // results.innerHTML = `Created calendars: ${response}`;
-	  results.innerHTML = results.innerHTML + '<br>End.</b>';
-	  var select = document.getElementById('calSelect');
-	  for (var i in js["ArrayList"]){
+		//nowtime();
+		var js = JSON.parse(xhr.responseText);
+		var response = js["Result"];
+		// results.innerHTML = `Created calendars: ${response}`;
+		results.innerHTML = results.innerHTML + '<br>End.</b>';
+		var select = document.getElementById('calSelect');
+		for (var i in js["ArrayList"]){
 			var opt = document.createElement('option');
 			opt.value = js["ArrayList"][i];
 			opt.innerHTML = js["ArrayList"][i];
 			select.appendChild(opt);
 		}
-		hideModal();
+		
+		document.getElementById("loader").style.display = "none";
 		if ($('select#calSelect option').length === 0){
 			$('#noCalendarModal').modal();
 			var opt = document.createElement('option');
@@ -881,7 +1105,7 @@ function loadCalSelect(){
 			opt.innerHTML = "No available calendar exists!";
 			infoAlert("No available calendar exists!");
 			calSelect.appendChild(opt);
-	}
+		}
 	} else {
 		results.innerHTML = `<b>Failed to connect!</b>`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -905,78 +1129,143 @@ function helper(){
                   document.getElementById("catt").setAttribute("style", "display:none");
                   document.getElementById("catdwt").setAttribute("style", "display:none");
                 }
+function monthHelper(month){
+	if (month < 10){
+		return "0" + month;
+	}
+	else{
+		return month;
+	}
+}
+
+function dateHelper(date){
+	if (date < 10){
+		return "0" + date;
+	}
+	else{
+		return date;
+	}
+}
+
 
 function infoAlert(text){
+	$('.alert').alert('close');
 	$("#myAlert").append('<div class="alert alert-info alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Heads Up!</strong> ' + text + '</div>');
 }
 
 function warningAlert(text){
+	$('.alert').alert('close');
 	$("#myAlert").append('<div class="alert alert-warning alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Warning!</strong> ' + text + '</div>');
 }
 
 function successAlert(text){
+	$('.alert').alert('close');
 	$("#myAlert").append('<div class="alert alert-success alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Congratulation!</strong> ' + text + '</div>');
 }
 
 
-function hideModal(){
-	 $("#loadingModal").removeClass("in");
-    $(".modal-backdrop").remove();
-    
-  $("#loadingModal").modal("hide");
-  // $('.modal.in').modal('hide');
+function meetDateDatepiker(){
+	$('#meetDate').datepicker({
+        // uiLibrary: 'bootstrap4',
+        format: 'yyyy-mm-dd',
+        disableDates: function (date) {
+        	var disabled = localStorage.getItem("currentCalAllDates");
+            if (disabled.indexOf(date.getFullYear() + "-" + (monthHelper(date.getMonth()+1)) + "-" + dateHelper(date.getDate())) != -1 ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    });
 }
 
-function showModal(){
- 	// initLoading();
- 	// myModal.modal();
- 	// localStorage.setItem("flag", true);
- 	$(".modal-backdrop").show();
-	$("#loadingModal").modal('show');
-	// document.getElementById("loadingModal").setAttribute("style", "display:block");
-	// alert(localStorage.getItem("flag"));
-
-
+function citDateDatepiker(){
+	$('#citDate').datepicker({
+        // uiLibrary: 'bootstrap4',
+        format: 'yyyy-mm-dd',
+        disableDates: function (date) {
+        	var disabled = localStorage.getItem("currentCalAllDates");
+            if (disabled.indexOf(date.getFullYear() + "-" + (monthHelper(date.getMonth()+1)) + "-" + dateHelper(date.getDate())) != -1 ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    });
 }
 
-// function initLoading(){
-// 	myModal = $('<div class="modal fade" id="loadingModal">' +
-// 			// '<div class="modal-backdrop">'+
-//             '<div style="width: 500px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 40%; top: 50%;margin-left:-100px;margin-top:-10px">' +
-//             '<div class="progress progress-striped active" style="margin-bottom: 0;">' +
-//             '<div class="progress-bar progress-bar-striped bg-info progress-bar-animated" role="progressbar" style="width: 100%;" aria-hidden="true"></div>' +
-//             "</div>" +
-//             '<h5>I am running, Please wait... <br> But, if you have waited several minutes, you know...</h5>' +
-//             "</div>" +
-// 			// '</div>' +
-//             " </div>" );
-//     $("body").append(myModal);
-// }
+function catdDateDatepiker(){
+	$('#catdDate').datepicker({
+        // uiLibrary: 'bootstrap4',
+        format: 'yyyy-mm-dd',
+        disableDates: function (date) {
+        	var disabled = localStorage.getItem("currentCalAllDates");
+            if (disabled.indexOf(date.getFullYear() + "-" + (monthHelper(date.getMonth()+1)) + "-" + dateHelper(date.getDate())) != -1 ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    });
+}
 
+function dailyMeetingsDatepiker(){
+	$('#dailyMeetings').datepicker({
+        // uiLibrary: 'bootstrap4',
+        format: 'yyyy-mm-dd',
+        disableDates: function (date) {
+        	var disabled = localStorage.getItem("currentCalAllDates");
+            if (disabled.indexOf(date.getFullYear() + "-" + (monthHelper(date.getMonth()+1)) + "-" + dateHelper(date.getDate())) != -1 ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    });
+}
 
+function meetDateChangeTime(){
+	$("#meetDate" ).on( "change", function() {
+            // $("#timeSelect").empty();
+            RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
+           });
+}
 
-// function plotLoadCalendars(arr1, arr2){
-// 		var values = [arr1];
+function citChangeTime(){
+	$("#citDate" ).on( "change", function() {
+              RetrieveNonCloseTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('citDate').value, ctsOpt: "citTimeSelect"});
+             });
+}
 
-// 		var data = [{
-// 		  type: 'table',
-// 		  header: {
-// 		    values: ["Calendar Name"],
-// 		    align: "center",
-// 		    line: {width: 1, color: 'black'},
-// 		    fill: {color: "grey"},
-// 		    font: {family: "Arial", size: 12, color: "white"}
-// 		  },
-// 		  cells: {
-// 		    values: values,
-// 		    align: "center",
-// 		    line: {color: "black", width: 1},
-// 		    font: {family: "Arial", size: 11, color: ["black"]}
-// 		  }
+function loadTimeout(){
+	document.getElementById("loader").style.display = "block";
+	setTimeout(hideLoader, 15000);
+}
+function hideLoader(){
+	document.getElementById("loader").style.display = "none";
+}
 
-// 		}]
+// var myScript = document.createElement("script");
+		// myScript.textContent = "$('#meetDate').datepicker({" +
+		// 						"uiLibrary: 'bootstrap4'," +
+		// 			            "format: 'yyyy-mm-dd'," +
+		// 			            "minDate: '2018-11-01'," +
+		// 						"maxDate: '2018-11-10'" +
+		// 						// "disableDates: localStorage.getItem('dateArray')" +
+		// 						"});"; 
+		// document.head.appendChild(myScript);
 
-// 		Plotly.plot('AvaCalendar', data);
-// }
+		// localStorage.getItem('currentCalSD')
+		// document.getElementById('modifyDate').value
+// 		test = $('<script>' +
+//             "$('#meetDate').datepicker({" +
+// 			"uiLibrary: 'bootstrap4'," +
+//             "format: 'yyyy-mm-dd'," +
+//             "minDate: '2018-11-01'," +
+// 			"maxDate: '2018-11-10'," +
+// 			// "disableDates: localStorage.getItem('dateArray')" +
+// 			"});" +
+//             " </script>" );
+//         $("body").append(test);	
 
 
