@@ -1,4 +1,4 @@
-package com.amazonaws.lambda.demo;
+package com.amazonaws.neutron.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +15,8 @@ import org.json.simple.parser.JSONParser;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.neutron.db.*;
+import com.amazonaws.neutron.model.CMSCalendar;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -36,72 +38,24 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 
 public class CreateCalendar implements RequestStreamHandler {
 	String quot = "\"";
+	boolean useRDS = false;
+	String checkPoint = "Original ";
 	
-	private AmazonS3 s3 = AmazonS3ClientBuilder.standard().build();
-	private String foldName = "cms-neutron/createdCalendar";
 	
-	/** Load up S3 Bucket with given key */
-	public boolean checkExistence(String arg) {
-		boolean result = true;
-		try {
-			S3Object cal = s3.getObject(foldName, arg);
-			cal.getObjectContent();
-			
-		} catch (SdkClientException sce) {
-			result = false;
-			sce.printStackTrace();
-		}
-		return result;
+	/** Upload data to MySQL */
+	public String uploadValueToDB(String calendarID, String calendarName, String startDate, String endDate, String startTime,
+			String endTime, String duration, String location, String organizer, String jsonFile) throws Exception { 
+		DatabaseDAO dao = new DatabaseDAO();
+        CMSCalendar calendar = new CMSCalendar(calendarID, calendarName, startDate, endDate, startTime, endTime, duration, location, organizer);
+        return dao.createCalendar(calendar);
 	}
-	/** Upload data to S3 bucket */
-	public void uploadValueToBucket(String keyName, String jsonFile) {        
-        String stringObjKeyName = keyName;
-        try {
-            // Upload a text string as a new object.
-            s3.putObject(foldName, stringObjKeyName, jsonFile);
-//            PutObjectRequest request = new PutObjectRequest(foldName, keyName, jsonFile);
-//            request.setCannedAcl(CannedAccessControlList.PublicRead);
-//            s3.putObject(request);
-        }
-        catch(AmazonServiceException e) {
-            // The call was transmitted successfully, but Amazon S3 couldn't process 
-            // it, so it returned an error response.
-            e.printStackTrace();
-        }
-        catch(SdkClientException e) {
-            // Amazon S3 couldn't be contacted for a response, or the client
-            // couldn't parse the response from Amazon S3.
-            e.printStackTrace();
-        }
-
-	}
-	/** Delete data to S3 bucket */
-	public void deleteValueFromBucket(String arg) {        
-        String stringObjKeyName = arg;
-        try {
-            // Upload a text string as a new object.
-            s3.deleteObject(foldName, stringObjKeyName);
-        }
-        catch(AmazonServiceException e) {
-            // The call was transmitted successfully, but Amazon S3 couldn't process 
-            // it, so it returned an error response.
-            e.printStackTrace();
-        }
-        catch(SdkClientException e) {
-            // Amazon S3 couldn't be contacted for a response, or the client
-            // couldn't parse the response from Amazon S3.
-            e.printStackTrace();
-        }
-
-	}
+	
 	
 	@Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException {
 		JSONParser parser = new JSONParser();
 	    LambdaLogger logger = context.getLogger();
         logger.log("Loading Java Lambda handler of RequestStreamHandler ");
-        
-        
 
         JSONObject headerJson = new JSONObject();
         headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
@@ -125,6 +79,7 @@ public class CreateCalendar implements RequestStreamHandler {
 	        String endTime = "";
 	        String duration = "";
 	        String location = "";
+	        String organizer = "";
 	        
 //	        logger.log("---------I am Here!!!!!!!!!!");
 //	        CalendarTest calTest = new Gson().fromJson(new InputStreamReader(inputStream),
@@ -156,7 +111,7 @@ public class CreateCalendar implements RequestStreamHandler {
 	                logger.log("startDate = " + startDate);
 	            }
 		        if ( event.get("endDate") != null) {
-	                endDate = (String)event.get("startDate");
+	                endDate = (String)event.get("endDate");
 	                logger.log("endDate = " + endDate);
 	            }
 		        if ( event.get("startTime") != null) {
@@ -164,7 +119,7 @@ public class CreateCalendar implements RequestStreamHandler {
 	                logger.log("startTime = " + startTime);
 	            }
 		        if ( event.get("endTime") != null) {
-	                endTime = (String)event.get("startTime");
+	                endTime = (String)event.get("endTime");
 	                logger.log("endTime = " + endTime);
 	            }
 		        if ( event.get("duration") != null) {
@@ -175,18 +130,32 @@ public class CreateCalendar implements RequestStreamHandler {
 	                location = (String)event.get("location");
 	                logger.log("location = " + location);
 	            }  
+		        if ( event.get("organizer") != null) {
+	                organizer = (String)event.get("organizer");
+	                logger.log("organizer = " + organizer);
+	            }  
 	        }
 	        String newCalendar = event.toJSONString();
-	        
 	        String result;
-	        if (checkExistence(calName)) {
-	        	result = "Calendar: " + "'" + calName + "'" + " exits!";
-	        }
-	        else {
-	        	result = "Create calendar: " + "'" + calName + "'" + " successfully!";
-	        	uploadValueToBucket(calName, newCalendar);
-	        	responseBody.put("CalendarInfo", "Information of the calendar: " + event.toString());
-	        }
+	        String calID = UUID.randomUUID().toString().substring(0, 20);
+        	String check = uploadValueToDB(calID, calName, startDate, endDate, startTime, endTime, duration, location, organizer, newCalendar);
+        	if (check.equals("succeed")) {
+        		result = "1";// Created successfully
+        	}
+        	else if (check.equals("existed") ){
+        		result = "0";//Already existed.
+        	}
+        	else if (check.equals("timeBug")){
+        		result = "-1"; // Time problem.
+        	}
+        	else {
+        		result = "-2"; // Date problem.
+        	}
+        	
+
+        	responseBody.put("CalendarInfo", "Calendar Name: " + calName + "<br>Organizer: " + organizer + "<br>Start Date: " + startDate
+        			+ "<br>End Date: " + endDate + "<br>Start Time: " + startTime + "(24-hour clock)<br>End Time: " + endTime 
+        			+ "(24-hour clock)<br>Location: " + location + "<br>Duration: " + duration + " min");
 			
 			// must go in as a String.
 			
