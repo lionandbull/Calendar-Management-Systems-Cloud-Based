@@ -2,7 +2,7 @@ package com.amazonaws.neutron.model;
 
 public class CMSCalendar {
 	public final String calendarID;
-	public final String calendarName;
+	public final String calName;
 	public final String startDate;
 	public final String endDate;
 	public final String startTime;
@@ -14,7 +14,7 @@ public class CMSCalendar {
 	public CMSCalendar(String calendarID, String calendarName, String startDate, String endDate, String startTime,
 			String endTime, String duration, String location, String organizer) {
 		this.calendarID = calendarID;
-		this.calendarName = calendarName;
+		this.calName = calendarName;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.startTime = startTime;
@@ -26,7 +26,7 @@ public class CMSCalendar {
 
 	@Override
 	public String toString() {
-		return "Calendar [calendarID=" + calendarID + ", calendarName=" + calendarName + ", startDate=" + startDate
+		return "Calendar [calendarID=" + calendarID + ", calendarName=" + calName + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", startTime=" + startTime + ", endTime=" + endTime + ", duration="
 				+ duration + ", location=" + location + ", organizer=" + organizer + "]";
 	}

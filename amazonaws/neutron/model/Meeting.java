@@ -2,7 +2,7 @@ package com.amazonaws.neutron.model;
 
 public class Meeting {
 	public final String meetingID;
-	public final String CalendarID;
+	public final String calendarID;
 	public final String timeSlotID;
 	public final String time;
 	public final String meetingWith;
@@ -13,7 +13,7 @@ public class Meeting {
 			String location, String meetDate) {
 		super();
 		this.meetingID = meetingID;
-		CalendarID = calendarID;
+		this.calendarID = calendarID;
 		this.timeSlotID = timeSlotID;
 		this.time = time;
 		this.meetingWith = meetingWith;

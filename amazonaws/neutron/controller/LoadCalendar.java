@@ -99,7 +99,7 @@ public class LoadCalendar implements RequestStreamHandler {
 	        	JsonArray jsonArray = new JsonParser().parse(data).getAsJsonArray();
 	        	responseBody.put("ArrayList", jsonArray);
 	        	responseBody.put("calID", calendar.calendarID);
-	        	responseBody.put("calName", calendar.calendarName);
+	        	responseBody.put("calName", calendar.calName);
 	        	responseBody.put("startDate", calendar.startDate);
 	        	responseBody.put("endDate", calendar.endDate);
 	        	responseBody.put("startTime", calendar.startTime);

@@ -81,13 +81,6 @@ public class CreateCalendar implements RequestStreamHandler {
 	        String location = "";
 	        String organizer = "";
 	        
-//	        logger.log("---------I am Here!!!!!!!!!!");
-//	        CalendarTest calTest = new Gson().fromJson(new InputStreamReader(inputStream),
-//	        		CalendarTest.class);
-//	        logger.log("---------I am Here!!!!!!!!!!");
-//	        logger.log(calTest.toString());
-//	        logger.log("------------------------------");
-	        
 	        
 	        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 	        JSONObject event = (JSONObject) parser.parse(reader);
@@ -99,7 +92,7 @@ public class CreateCalendar implements RequestStreamHandler {
 	        	event = (JSONObject) parser.parse(body);
 	        }
 	        
-	        //responseBody.put("input", event.toJSONString());
+	   
 	        logger.log("event:" + event.toString());
 	        if (event != null) {
 		        if ( event.get("calName") != null) {

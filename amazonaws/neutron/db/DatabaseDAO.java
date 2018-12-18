@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.UUID;
 
-import com.amazonaws.lambda.demo.CreateCalendar;
 import com.amazonaws.neutron.model.*;
 import com.amazonaws.neutron.util.DateHelper;
 import com.amazonaws.neutron.util.TimeHelper;
@@ -34,7 +33,7 @@ class TimeComparator implements Comparator<TimeSlot>
 
 public class DatabaseDAO {
 	java.sql.Connection conn;
-	String check = "Original11";
+//	String check = "Original11";
     public DatabaseDAO() {
     	try  {
     		conn = DatabaseUtil.connect();
@@ -43,8 +42,9 @@ public class DatabaseDAO {
     	}
     }
     public static void main(String[] args) throws Exception {
-    	DatabaseDAO dao = new DatabaseDAO();
-		CMSCalendar calendar = new CMSCalendar("dqwd1231231231321", "personal", "2018-11-14", "2018-11-16", "09:00", "13:00", "30", "WPI", "neutron");
+//    	DatabaseDAO dao = new DatabaseDAO();
+//		CMSCalendar calendar = new CMSCalendar("dqwd1231231231321", "personal", "2018-11-14", "2018-11-16", "09:00", "13:00", "30", "WPI", "neutron");
+		
 //    	dao.showAllCalendar();
 //    	dao.removeCalendar("personal");
 //    	dao.removeCalendar("Personal2");
@@ -165,6 +165,7 @@ public class DatabaseDAO {
     
     public boolean addDate(String calID, String date, String startTime, String endTime, String duration) throws Exception {
     	try {
+    		
     		PreparedStatement ps = conn.prepareStatement("SELECT * FROM AvailableDate WHERE CalendarID = ? AND Date = ?;");
     		ps.setString(1, calID);
     		ps.setString(2, date);
@@ -570,7 +571,7 @@ public class DatabaseDAO {
         	}
         	
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM Calendar WHERE CalendarName = ?;");
-            ps.setString(1, calendar.calendarName);
+            ps.setString(1, calendar.calName);
             ResultSet resultSet = ps.executeQuery();
             
             // already exist?
@@ -584,7 +585,7 @@ public class DatabaseDAO {
             ps = conn.prepareStatement("INSERT INTO Calendar (CalendarID, CalendarName, StartDate, "
             		+ "EndDate, StartTime, EndTime, Duration, Location, Organizer) values(?,?,?,?,?,?,?,?,?);");
             ps.setString(1,  calendar.calendarID);
-            ps.setString(2,  calendar.calendarName);
+            ps.setString(2,  calendar.calName);
             ps.setString(3,  calendar.startDate);
             ps.setString(4,  calendar.endDate);
             ps.setString(5,  calendar.startTime);
