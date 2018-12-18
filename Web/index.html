@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <script type="text/javascript", src="js/buttons.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
 <!-- <link rel="stylesheet" href="jquery-ui.css">
 <link rel="stylesheet" href="style.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -42,8 +42,8 @@
     <!-- <link href="starter-template.css" rel="stylesheet"> -->
   </head>
 
-<body onload="loadCalSelect()" data-gr-c-s-loaded="true" style="overflow-y:scroll">	
-
+<body onload="loadCalSelect()" data-gr-c-s-loaded="true" style="overflow:auto">	
+  
   
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-fixed-top">
         <!-- <div class="navbar-header">
@@ -90,8 +90,9 @@
     <!--   Main   
     ==================================================
     -->
-
-    <main role="main">
+    <div id="myAlert" class="sticky-top mt-10 text-center"> </div>
+    
+    <main role="main" id="main">
       <section class="jumbotron jumbotron-fluid text-center bg-white">
 
         <div class="container">
@@ -108,7 +109,7 @@
           </div>
         </div> 
 
-        <div id="myAlert" style="padding: 0px" > </div>
+        <!-- <div id="myAlert" style="padding: 0px" > </div> -->
       </section>
       
       
@@ -116,7 +117,8 @@
         <div class="album py-5 bg-light" style="display:none" id="album">
 
           <div class="container">
-
+            
+            
             <div class="row" >
 
               <div class="col-md-4">
@@ -124,7 +126,7 @@
                     <div id="addremovedate">
                       <h2 align="center">Add/Remove Date</h2>
                         <div align="center" class="input-group">
-                          <input id="modifyDate" class="form-control" width="210" readonly aria-describedby="button-addon2>
+                          <input id="modifyDate" class="form-control" width="210" readonly>
                           <div class="input-group-append">
                             <button class="btn btn-info" type="button"  onclick="AddDate()">
                               Add
@@ -133,7 +135,7 @@
                               Remove
                             </button>
                           </div>
-                          
+                        </div> 
                     </div>
                     <br>
 
@@ -357,7 +359,7 @@
           </div>
         </div>
         
-        <div id="loader" style="display: none"></div>
+        <div id="loader" style="display: none; position: fixed"></div>
 
     </main>
 
@@ -410,6 +412,7 @@
              });
        });
 
+      
         // $(function() {
       //  var  meetDateVar = $("#meetDate" ).on( "change", function() {
       //       // $("#timeSelect").empty();
@@ -443,13 +446,14 @@
 }
 
 .jumbotron {
-    height: 220px;
+    height: 0px;
 }
+
 
 #loader {
   position: absolute;
   left: 50%;
-  top: 70%;
+  top: 50%;
   width: 150px;
   height: 150px;
   margin: -75px 0 0 -75px;

@@ -12,7 +12,6 @@
 <!DOCTYPE html>
 <html>
 <script type="text/javascript", src="js/buttons.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <!-- <link rel="stylesheet" href="jquery-ui.css">
 <link rel="stylesheet" href="style.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -77,15 +76,15 @@
       </div>
     </nav>
 
-
+	<div id="myAlert" class="sticky-top text-center"> </div>
     <main role="main">
-
+		
 		<section class="jumbotron text-center bg-white">
 		<div class="container">
 		  <h1 class="jumbotron-heading"> Calendar Management System </h1>
 		</div>
 		<hr class="my-4">
-        <div id="myAlert" style="padding: 0px;"> </div>
+        
 		
 			<!-- Result -->
 		  <div align="center" id="results" class="results" style= "display:none">
@@ -238,7 +237,7 @@
 		  </div>
 		</div>
 		
-		<div id="loader" style="display: none"></div>
+		<div id="loader" style="display: none; position: fixed"></div>
 	</main>
     
 <body>
