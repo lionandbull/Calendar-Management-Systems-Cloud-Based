@@ -83,13 +83,20 @@
                 </div>
               </div>
             </form>
-
+            
+           
             
           </ul>
           
-          
+           <div id="inviteDiv" style="display: none">
+              <div class="mx-auto" style="width: 400px;" >
+                <!-- <button type="button"  id="invitePopover" data-placement="bottom" class="btn btn-sm btn-info"  data-toggle="popover" title="Copy the following link to others:" data-content="" onclick="ShareDivTrigger()">Click to invite people to shcedule meeting with you!</button> -->
+                <button type="button"   class="btn btn-sm btn-info" onclick="ShareModalTrigger()">Click to invite people to shcedule meeting with you!</button>
+              </div>
+            </div>
 
           <span class="badge badge-pill badge-light" id="userNickName">Hi</span>
+
           <button class="btn btn-outline-success my-2 my-sm-0" type="button"  onclick="LogOut()">
                   Logout
               </button>
@@ -152,11 +159,11 @@
           <div class="container">
             <div id="myAlert" class="sticky-top mt-10 text-center"> </div>
             
-            <div id="inviteDiv" style="display: none">
+            <!-- <div id="inviteDiv" style="display: none">
               <div class="mx-auto" style="width: 400px;" >
                 <button type="button"  id="invitePopover" data-placement="top" class="btn btn-sm btn-info"  data-toggle="popover" title="Copy the following link to others:" data-content="" onclick="ShareDivTrigger()">Click to invite people to shcedule meeting with you!</button>
               </div>
-            </div>
+            </div> -->
             
             <div class="row" >
 
@@ -319,7 +326,7 @@
                     <!-- Show meeting -->
                     <div  id="showMeetings"  class="showMeetings" style= "display:none"> 
                       <h2>Meeting Board</h2>
-                        
+                        <button class="btn btn-info" onclick="ShowAllMeetings()">Show All Meetings</button>
                           <div class="input-group mb-3">
                             <input id="dailyMeetings" name="dailyMeetings" class="form-control" width="500" readonly>
                             <!-- <input type="Date" class="form-control" id="dailyMeetings" name="dailyMeetings" aria-describedby="button-addon1"> -->
@@ -343,7 +350,7 @@
                               <button class="btn-xlarge btn-info" onclick="CancelMeeting()" class="meetingSelectButton">Cancel Meeting</button>
                             
                           </div>
-                          <button class="btn btn-info" onclick="ShowAllMeetings()">Show All Meetings</button>
+                          
                         
                     </div>
               </div>
@@ -402,23 +409,24 @@
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">One more step!</h5>
+                <h5 class="modal-title" id="exampleModalCenterTitle">Copy the following link to others:</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body" id="shareModalBody">
-                Copy the following link to others:<br>
-              </div>
+
+              <div class="modal-body" id="shareModalBody"></div>
+
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Stay here</button>
-                <button type="button" class="btn btn-primary" onclick="PassValues()">Go to the invite page</button>
+                <button type="button" class="btn btn-primary" onclick="PassValues()">Go to the link page</button>
               </div>
             </div>
           </div>
         </div>
         
         <div id="loader" style="display: none; position: fixed"></div>
+
     </main>
 
    

@@ -72,12 +72,6 @@
         message: 'Please go back to sign in.',
       })
       console.log(result);
-      
-      // EventEmitter.emit('ConfirmForm:mount', {
-      //     email: $inputs.email.value,
-      //   });
-        // EventEmitter.emit('SignupForm:unmount');
-
     })
     .catch(function(error) {
       stopLoading()
@@ -87,6 +81,12 @@
       })
       console.error(error)
     })
+
+    EventEmitter.emit('ConfirmForm:mount', {
+            username: $inputs.username.value,
+          });
+    EventEmitter.emit('SignupForm:unmount');
+    
   }
 
   EventEmitter.on('SignupForm:mount', function() {

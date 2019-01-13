@@ -49,9 +49,11 @@
   }
 
   function handleSubmit(event) {
+
     event.preventDefault()
     var $inputs = $container.getElementsByTagName('input');
     startLoading()
+
     Cognito.logIn($inputs.email.value, $inputs.password.value)
     .then(function(result) {
       stopLoading()
@@ -69,7 +71,7 @@
       // confirmation form page.
       if (error.message === 'User is not confirmed.') {
         EventEmitter.emit('ConfirmForm:mount', {
-          email: $inputs.email.value,
+          username: $inputs.username.value,
         });
         EventEmitter.emit('LoginForm:unmount');
         return;

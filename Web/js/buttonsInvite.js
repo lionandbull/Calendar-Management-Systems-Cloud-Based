@@ -62,8 +62,9 @@ function setLocalStorage(){
 												" to " + localStorage.getItem("currentCalED");
 	document.getElementById("hostNickName").innerHTML = 'Inviter: ' + localStorage.getItem("userNickName"); 					
 	document.getElementById("hostEmail").innerHTML += "Inviter's Email: " + localStorage.getItem("userEmail");	
-	document.getElementById("whotomeet").setAttribute("value", localStorage.getItem('userNickName'));	
+	// document.getElementById("whotomeet").setAttribute("value", localStorage.getItem('userNickName'));	
 	document.getElementById('locationInput').setAttribute("value", localStorage.getItem("currentCalLocation"));
+	
 	};
 }
 

@@ -21,7 +21,8 @@
     new CognitoUserAttribute({
       Name: 'nickname',
       Value: nickname,
-    })]
+    })
+    ]
     return new Promise(function(resolve, reject) {
       // UserPool.signUp(
       //   username,

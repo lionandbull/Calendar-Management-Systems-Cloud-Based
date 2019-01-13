@@ -1,5 +1,5 @@
 (function(EventEmitter, tmpl, Cognito) {
-  var email,
+  var username,
     $root = document.getElementById('root'),
     $container = document.createElement('div'),
     $alert,
@@ -71,7 +71,7 @@
     event.preventDefault();
     var $inputs = $container.getElementsByTagName('input');
     startLoading();
-    Cognito.confirm(email, $inputs.code.value)
+    Cognito.confirm(username, $inputs.code.value)
     .then(function(result) {
       //stopLoading();
       addAlert({
@@ -99,7 +99,7 @@
   EventEmitter.on('ConfirmForm:mount', function(options) {
     Cognito.isNotAuthenticated()
     .then(function() {
-      email = options.email;
+      username = options.username;
       $container.innerHTML = tmpl('ConfirmForm', {})
       $resend = $container.getElementsByClassName('Control__link')[0]
       $link = $container.getElementsByClassName('Control__link')[1];

@@ -60,7 +60,7 @@
 
 <body>		
 
-	<nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-static-top">
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
       <a class="navbar-brand" href="#">CMS Alpha</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -68,7 +68,7 @@
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
+          <li class="nav-item">
             <a class="nav-link" href="user.html">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
@@ -78,8 +78,11 @@
             <a class="nav-link" href="closeTimeslots.html">Close Timeslot</a>
           </li> -->
         </ul>
+
         <span class="badge badge-pill badge-light" id="userNickName">Hi</span>
-      	<a class="nav-link text-white" href="https://cms.auth.us-east-2.amazoncognito.com/login?response_type=code&client_id=1n47vd7hr7u0hf5oo9k98dm8bt&redirect_uri=https://users.wpi.edu/~wliu6/">Logout</a>
+      	<button class="btn btn-outline-success my-2 my-sm-0" type="button"  onclick="LogOut()">
+                  Logout
+              </button>
       </div>
     </nav>
 

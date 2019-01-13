@@ -39,7 +39,7 @@ function ShareDivTrigger(){
 }
 
 function ShareModalTrigger(){
-	document.getElementById("shareModalBody").innerHTML ='Copy the following link to others:<br>'+ "https://users.wpi.edu/~wliu6/inviteSchedule.html?values=" + localStorage.getItem("currentCalID");
+	document.getElementById("shareModalBody").innerHTML ="https://users.wpi.edu/~wliu6/inviteSchedule.html?values=" + localStorage.getItem("currentCalID");
 	$('#shareModal').modal();
 	
 }
@@ -1340,8 +1340,9 @@ function hideLoader(){
 	document.getElementById("loader").style.display = "none";
 }
 
+
+
 function PassValues(){
-	var getval ="valueTest";
     window.location.href="inviteSchedule.html?values=" + localStorage.getItem("currentCalID"); 
 }
 
