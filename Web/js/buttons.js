@@ -33,6 +33,17 @@ function target_popup2(calName) {
     this.target = 'POPUPW';
 }
 
+function ShareDivTrigger(){
+	
+	document.getElementById("invitePopover").setAttribute("data-content", "https://users.wpi.edu/~wliu6/inviteSchedule.html?values=" + localStorage.getItem("currentCalID"));
+}
+
+function ShareModalTrigger(){
+	document.getElementById("shareModalBody").innerHTML ='Copy the following link to others:<br>'+ "https://users.wpi.edu/~wliu6/inviteSchedule.html?values=" + localStorage.getItem("currentCalID");
+	$('#shareModal').modal();
+	
+}
+
 function RemoveCalendarTrigger(){
 	$('#removeCalendarModal').modal();
 }
@@ -66,9 +77,9 @@ function RemoveCalendar(){
 	   	// document.getElementById("calSelectL").selectedIndex = "1";
 	  removeOptions(calSelect);
 	  loadCalSelect();
-	  if (calName === localStorage.getItem("currentCalName")){
+	  if (calName === sessionStorage.getItem("currentCalName")){
 	  	document.getElementById("curP").innerHTML = "null";
-	   	localStorage.clear();
+	   	sessionStorage.clear();
 	   	document.getElementById("scheduleMeeting").setAttribute("style", "display:none");
 	   	document.getElementById("showMeetings").setAttribute("style", "display:none");
 	   	document.getElementById("closeTS").setAttribute("style", "display:none");
@@ -103,6 +114,7 @@ function CreateCalendar(){
 	var duration = div_para.duration.value;
 	var location = div_para.location.value;
 	var organizer = div_para.organizer.value;
+	var userEmail = localStorage.getItem("UserEmail");
 	// warningAlert(document.getElementById("sdInput").value);
 	// warningAlert(document.getElementById("edInput").value);
 	// warningAlert(startTime);
@@ -126,6 +138,7 @@ function CreateCalendar(){
 	data["duration"] = duration;
 	data["location"] = location;
 	data["organizer"] = organizer;
+	data["userEmail"] = userEmail;
 
 	var js = JSON.stringify(data);
 	var xhr = new XMLHttpRequest();
@@ -221,7 +234,7 @@ function ScheduleMeeting(){
 
 	loadTimeout()
 
-	var calID = localStorage.getItem("currentCalID");
+	var calID = sessionStorage.getItem("currentCalID");
 	var schedule_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/schedule-meeting";
 	var data = {};
 	data["calID"] = calID;
@@ -267,7 +280,7 @@ function CancelMeeting(){
 	
 	
 	var results = document.getElementById('resultsP');
-	var calID = localStorage.getItem("currentCalID");
+	var calID = sessionStorage.getItem("currentCalID");
 	var meetingID = document.getElementById('meetingSelect').value;
 	results.innerHTML = `I am running...<br>`;
 	if (meetingID === ""){
@@ -298,7 +311,7 @@ function CancelMeeting(){
 	  	$('#meetingSelect :selected').remove();
 	  }
 	  if (document.getElementById('meetDate').value !== ''){
-	  	RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
+	  	RetrieveOpenTimeslot({calID:sessionStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
 	  }
 	  successAlert("The meeting has been canceled!");
 	  // hideLoader();
@@ -312,7 +325,7 @@ function CancelMeeting(){
 function CloseCIT(){
 
 	var results = document.getElementById('resultsP');
-	var calID = localStorage.getItem("currentCalID");
+	var calID = sessionStorage.getItem("currentCalID");
 	var date = document.getElementById('citDate').value;
 	var time = document.getElementById('citTimeSelect').value;
 
@@ -354,7 +367,7 @@ function CloseCIT(){
 		document.getElementById('citTimeSelect').appendChild(opt);
 	  }
 	  if (document.getElementById('meetDate').value === date){
-	  	RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
+	  	RetrieveOpenTimeslot({calID:sessionStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
 	  }
 	  document.getElementById('citTimeSelect').options[document.getElementById('citTimeSelect').selectedIndex].setAttribute("disabled", "disabled");
 	  $('#citTimeSelect option:selected').next().attr('selected', 'selected');
@@ -369,7 +382,7 @@ function CloseCIT(){
 
 function CloseCATD(){
 	var results = document.getElementById('resultsP');
-	var calID = localStorage.getItem("currentCalID");
+	var calID = sessionStorage.getItem("currentCalID");
 	var date = document.getElementById('catdDate').value;
 
 	results.innerHTML = `I am running...<br>`;
@@ -423,7 +436,7 @@ function CloseCATD(){
 
 function CloseCATT(){
 	var results = document.getElementById('resultsP');
-	var calID = localStorage.getItem("currentCalID");
+	var calID = sessionStorage.getItem("currentCalID");
 	var time = document.getElementById('cattTimeSelect').value;
 
 	results.innerHTML = `I am running...<br>`;
@@ -458,7 +471,7 @@ function CloseCATT(){
 	  // $('#cattTimeSelect option:selected').next().attr('selected', 'selected');
 	  results.innerHTML += `<br>End.`;
 	  if (document.getElementById('meetDate').value !== ''){
-	  	RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
+	  	RetrieveOpenTimeslot({calID:sessionStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
 	  }
 	  successAlert("You have closed all timeslots at " + time + "!");
 	  hideLoader();
@@ -471,7 +484,7 @@ function CloseCATT(){
 
 function CloseCATDWT(){
 	var results = document.getElementById('resultsP');
-	var calID = localStorage.getItem("currentCalID");
+	var calID = sessionStorage.getItem("currentCalID");
 	var day = document.getElementById('catdwtDaySelect').value;
 	var time = document.getElementById('catdwtTimeSelect').value;
 
@@ -520,7 +533,7 @@ function CloseCATDWT(){
 
 function RemoveDate(){
 	var results = document.getElementById('resultsP');
-	var calID = localStorage.getItem("currentCalID");
+	var calID = sessionStorage.getItem("currentCalID");
 	var date = document.getElementById('modifyDate').value;
 	results.innerHTML = `I am running...<br>`;
 	if (date === '') {
@@ -562,12 +575,12 @@ function RemoveDate(){
 			document.getElementById('catdDate').value = '';
 			document.getElementById('dailyMeetings').value = '';
 
-			var storedData = localStorage.getItem("currentCalAllDates");
+			var storedData = sessionStorage.getItem("currentCalAllDates");
 			if (storedData) {
 			    dateArray = JSON.parse(storedData);
 			} 
 			dateArray.splice( dateArray.indexOf(date), 1 );
-			localStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
+			sessionStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
 
 			// $("#meetDate").datepicker("destroy");
 			meetDateDatepiker();
@@ -593,13 +606,13 @@ function RemoveDate(){
 
 function AddDate(){
 	var results = document.getElementById('resultsP');
-	var calID = localStorage.getItem("currentCalID");
+	var calID = sessionStorage.getItem("currentCalID");
 	var date = document.getElementById('modifyDate').value;
-	var startDate = localStorage.getItem("currentCalSD");
-	var endDate = localStorage.getItem("currentCalED");
-	var startTime = localStorage.getItem("currentCalST");
-	var endTime	= localStorage.getItem("currentCalET");
-	var duration = localStorage.getItem("currentCalDuration");
+	var startDate = sessionStorage.getItem("currentCalSD");
+	var endDate = sessionStorage.getItem("currentCalED");
+	var startTime = sessionStorage.getItem("currentCalST");
+	var endTime	= sessionStorage.getItem("currentCalET");
+	var duration = sessionStorage.getItem("currentCalDuration");
 	results.innerHTML = `I am running...<br>`;
 	if (date === '') {
 		infoAlert(`Please choose a date!`);
@@ -645,12 +658,12 @@ function AddDate(){
 		// for (i in js["ArrayList"]){
 		// 	dateArray.push(js["ArrayList"][i]);
 		// }	
-		var storedData = localStorage.getItem("currentCalAllDates");
+		var storedData = sessionStorage.getItem("currentCalAllDates");
 		if (storedData) {
 		    dateArray = JSON.parse(storedData);
 		} 
 		dateArray.push(date);
-		localStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
+		sessionStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
 		
 		// $("#meetDate").datepicker("destroy");
 		meetDateDatepiker();
@@ -677,7 +690,7 @@ function AddDate(){
 
 
 function LoadCalendars(){
-	localStorage.clear();
+	sessionStorage.clear();
 	// var calendarNameArr = ["Professional", "Private"];
 	// plotLoadCalendars(calendarNameArr, locationArr);
 	var results = document.getElementById('resultsP');
@@ -702,6 +715,8 @@ function LoadCalendars(){
 		var js = JSON.parse(xhr.responseText);
 		var response = js["Result"];
 		var calID = js["calID"];
+		var userNickName = js["userNickName"];
+		var userName = js["userName"];
 		var calName = js["calName"];
 		var startDate = js["startDate"];
 		var endDate = js["endDate"];
@@ -717,18 +732,27 @@ function LoadCalendars(){
 			results.innerHTML = results.innerHTML + '<br>End.</b>';
 			if (typeof(Storage) !== "undefined") {
 				// Store
+				sessionStorage.setItem("currentCalID", calID);
 				localStorage.setItem("currentCalID", calID);
-				localStorage.setItem("currentCalName", calName);
+				sessionStorage.setItem("currentCalName", calName);
+				localStorage.setItem("currentCalID", calID);
+				sessionStorage.setItem("currentCalSD", startDate);
 				localStorage.setItem("currentCalSD", startDate);
+				sessionStorage.setItem("currentCalED", endDate);
 				localStorage.setItem("currentCalED", endDate);
+				sessionStorage.setItem("currentCalST", startTime);
 				localStorage.setItem("currentCalST", startTime);
+				sessionStorage.setItem("currentCalET", endTime);
 				localStorage.setItem("currentCalET", endTime);
+				sessionStorage.setItem("currentCalDuration", duration);
 				localStorage.setItem("currentCalDuration", duration);
+				localStorage.setItem("currentCalLocation", location);
 
 				var dateArray = [];
 				for (i in js["ArrayList"]){
 					dateArray.push(js["ArrayList"][i]);
 				}	
+				sessionStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
 				localStorage.setItem("currentCalAllDates", JSON.stringify(dateArray));
 			} 
 			else {
@@ -750,6 +774,8 @@ function LoadCalendars(){
 			catdDateDatepiker();
 			helper();
 			document.getElementById('ctsSelect').selectedIndex = "0";
+			// document.getElementById("inviteDiv").setAttribute("style", "display:block");
+			document.getElementById("inviteDiv").setAttribute("style", "display:block");
 			document.getElementById("scheduleMeeting").setAttribute("style", "display:block");
 			document.getElementById("showMeetings").setAttribute("style", "display:block");
 			ShowAllMeetings();
@@ -763,7 +789,7 @@ function LoadCalendars(){
 			}
 		else {
 			document.getElementById("curP").innerHTML = "null";
-			localStorage.clear();
+			sessionStorage.clear();
 			document.getElementById("scheduleMeeting").setAttribute("style", "display:none");
 			document.getElementById("showMeetings").setAttribute("style", "display:none");
 			document.getElementById("closeTS").setAttribute("style", "display:none");
@@ -905,7 +931,7 @@ function RetrieveNonCloseTimeslot(context){
 
 function ShowAllMeetings(){
 	document.getElementById("resultsP").innerHTML = "I am running...";
-	// if (localStorage.getItem("currentCalID") === null){
+	// if (sessionStorage.getItem("currentCalID") === null){
 
 	// 	document.getElementById("resultsP").innerHTML += "<br>Current calendar is null, please load a calendar first.<br>End.";
 	// 	return;
@@ -913,7 +939,7 @@ function ShowAllMeetings(){
 
     var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/retrieve-am";
     var xhr = new XMLHttpRequest();	
-    var calID = localStorage.getItem("currentCalID");
+    var calID = sessionStorage.getItem("currentCalID");
 
     
     loadTimeout();
@@ -947,7 +973,7 @@ function ShowAllMeetings(){
 		document.getElementById("showMeetings").setAttribute("style", "display:block");
 		
 		if (js["ArrayList"].length === 0){
-			$("#myAlert").append('<div class="alert alert-info alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Heads Up!</strong> There is no scheduled meeting in calendar: ' + localStorage.getItem("currentCalName") + '.</div>');
+			$("#myAlert").append('<div class="alert alert-info alert-dismissible" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Heads Up!</strong> There is no scheduled meeting in calendar: ' + sessionStorage.getItem("currentCalName") + '.</div>');
 			document.getElementById("resultsP").innerHTML += "<br>End.";
 			hideLoader();
 			return;
@@ -965,7 +991,7 @@ function ShowDailyMeetings(){
 
     var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/retrieve-dm";
     var xhr = new XMLHttpRequest();	
-    var calID = localStorage.getItem("currentCalID");
+    var calID = sessionStorage.getItem("currentCalID");
     var meetDate = document.getElementById('dailyMeetings').value;
     document.getElementById("resultsP").innerHTML = "I am running...";	
     if (meetDate === ""){
@@ -1023,7 +1049,7 @@ function ShowDailyMeetings(){
 function ShowMonthlyMeetings(){
     var url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/retrieve-mm";
     var xhr = new XMLHttpRequest();	
-    var calID = localStorage.getItem("currentCalID");
+    var calID = sessionStorage.getItem("currentCalID");
     var yearMonth = document.getElementById('monthlyMeetings').value;
     document.getElementById("resultsP").innerHTML = "I am running...";
     if (yearMonth === ""){
@@ -1077,16 +1103,66 @@ function ShowMonthlyMeetings(){
     };
 }
 
+function getCurrentUserInfo(){
+	cognitoUser.getUserAttributes(function(err, result) {
+        if (err) {
+            alert(err);
+            return;
+        }
+        localStorage.setItem("UserEmail", result[3].getValue());
+		localStorage.setItem("UserNickName", result[2].getValue());
+        document.getElementById("userNickName").innerHTML = 'Hi ' + result[2].getValue(); 
+        loadCalSelect();
+    });
+}
+
+
+// function getCurrentUserInfo(){
+// 	loadTimeout();
+	
+// 	var show_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/get-current-user";
+// 	var data = {};
+// 	var js = JSON.stringify(data);
+// 	var xhr = new XMLHttpRequest();
+// 	xhr.open("GET", show_url, true);
+// 	// send the collected data as JSON
+// 	xhr.send(js);
+	
+// 	// This will process results and update HTML as appropriate. 
+// 	xhr.onloadend = function () {
+// 	if (xhr.readyState == XMLHttpRequest.DONE) {
+		
+// 		//nowtime();
+// 		var js = JSON.parse(xhr.responseText);
+// 		document.getElementById("userNickName").innerHTML = 'Hi ' + js["UserNickName"]; 
+
+// 		// results.innerHTML = `Created calendars: ${response}`;
+// 		hideLoader();
+
+// 	} else {
+// 		results.innerHTML = `<b>Failed to connect!</b>`;
+// 	  //updateHistory(arg1, arg2, "N/A");
+// 	}
+// 	};
+	
+// }
+
 function loadCalSelect(){
 	loadTimeout();
-	localStorage.setItem("flag", false);
+	sessionStorage.setItem("flag", false);
 	var results = document.getElementById('resultsP');
 	results.innerHTML = `I am running...`;
+
+	var userEmail = localStorage.getItem("UserEmail");
+	var userNickName = localStorage.getItem("UserNickName");
 	var show_url = "https://oi7iisyjp1.execute-api.us-east-2.amazonaws.com/Alpha/show-calendar";
 	var data = {};
 	var js = JSON.stringify(data);
 	var xhr = new XMLHttpRequest();
-	xhr.open("GET", show_url, true);
+
+
+	xhr.open("GET", show_url + "?userEmail=" + userEmail, true);
+	// xhr.open("GET", show_url, true);
 	// send the collected data as JSON
 	xhr.send(js);
 	
@@ -1097,6 +1173,14 @@ function loadCalSelect(){
 		//nowtime();
 		var js = JSON.parse(xhr.responseText);
 		var response = js["Result"];
+		//--- store user info to check validation ---
+		localStorage.setItem("emailCheck", userEmail);
+		localStorage.setItem("nickNameCheck", userNickName);
+		//--- end ---
+
+		// document.getElementById("userNickName").innerHTML = 'Hi ' + js["UserNickName"]; 
+
+
 		// results.innerHTML = `Created calendars: ${response}`;
 		results.innerHTML = results.innerHTML + '<br>End.</b>';
 		var select = document.getElementById('calSelect');
@@ -1116,6 +1200,7 @@ function loadCalSelect(){
 			infoAlert("No available calendar exists!");
 			calSelect.appendChild(opt);
 		}
+
 	} else {
 		results.innerHTML = `<b>Failed to connect!</b>`;
 	  //updateHistory(arg1, arg2, "N/A");
@@ -1179,7 +1264,7 @@ function meetDateDatepiker(){
         // uiLibrary: 'bootstrap4',
         format: 'yyyy-mm-dd',
         disableDates: function (date) {
-        	var disabled = localStorage.getItem("currentCalAllDates");
+        	var disabled = sessionStorage.getItem("currentCalAllDates");
             if (disabled.indexOf(date.getFullYear() + "-" + (monthHelper(date.getMonth()+1)) + "-" + dateHelper(date.getDate())) != -1 ) {
                 return true;
             } else {
@@ -1194,7 +1279,7 @@ function citDateDatepiker(){
         // uiLibrary: 'bootstrap4',
         format: 'yyyy-mm-dd',
         disableDates: function (date) {
-        	var disabled = localStorage.getItem("currentCalAllDates");
+        	var disabled = sessionStorage.getItem("currentCalAllDates");
             if (disabled.indexOf(date.getFullYear() + "-" + (monthHelper(date.getMonth()+1)) + "-" + dateHelper(date.getDate())) != -1 ) {
                 return true;
             } else {
@@ -1209,7 +1294,7 @@ function catdDateDatepiker(){
         // uiLibrary: 'bootstrap4',
         format: 'yyyy-mm-dd',
         disableDates: function (date) {
-        	var disabled = localStorage.getItem("currentCalAllDates");
+        	var disabled = sessionStorage.getItem("currentCalAllDates");
             if (disabled.indexOf(date.getFullYear() + "-" + (monthHelper(date.getMonth()+1)) + "-" + dateHelper(date.getDate())) != -1 ) {
                 return true;
             } else {
@@ -1224,7 +1309,7 @@ function dailyMeetingsDatepiker(){
         // uiLibrary: 'bootstrap4',
         format: 'yyyy-mm-dd',
         disableDates: function (date) {
-        	var disabled = localStorage.getItem("currentCalAllDates");
+        	var disabled = sessionStorage.getItem("currentCalAllDates");
             if (disabled.indexOf(date.getFullYear() + "-" + (monthHelper(date.getMonth()+1)) + "-" + dateHelper(date.getDate())) != -1 ) {
                 return true;
             } else {
@@ -1237,13 +1322,13 @@ function dailyMeetingsDatepiker(){
 function meetDateChangeTime(){
 	$("#meetDate" ).on( "change", function() {
             // $("#timeSelect").empty();
-            RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
+            RetrieveOpenTimeslot({calID:sessionStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
            });
 }
 
 function citChangeTime(){
 	$("#citDate" ).on( "change", function() {
-              RetrieveNonCloseTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('citDate').value, ctsOpt: "citTimeSelect"});
+              RetrieveNonCloseTimeslot({calID:sessionStorage.getItem("currentCalID"), date:document.getElementById('citDate').value, ctsOpt: "citTimeSelect"});
              });
 }
 
@@ -1255,17 +1340,47 @@ function hideLoader(){
 	document.getElementById("loader").style.display = "none";
 }
 
+function PassValues(){
+	var getval ="valueTest";
+    window.location.href="inviteSchedule.html?values=" + localStorage.getItem("currentCalID"); 
+}
+
+function LogOut(){
+	cognitoUser.signOut();
+	window.location.href="index.html";
+}
+
+function whetherLogin(){
+	if (cognitoUser === null){
+		alert("Please Log in")
+        window.location.href="index.html";
+	}
+	cognitoUser.getSession(function(err, session) {
+            if (err) {
+               alert(err);
+                return;
+            }
+            if (session.isValid()){
+            	getCurrentUserInfo();
+            }
+            else{
+            	alert("Please Log in.")
+            	window.location.href="index.html";
+            }
+          });
+}
+
 // var myScript = document.createElement("script");
 		// myScript.textContent = "$('#meetDate').datepicker({" +
 		// 						"uiLibrary: 'bootstrap4'," +
 		// 			            "format: 'yyyy-mm-dd'," +
 		// 			            "minDate: '2018-11-01'," +
 		// 						"maxDate: '2018-11-10'" +
-		// 						// "disableDates: localStorage.getItem('dateArray')" +
+		// 						// "disableDates: sessionStorage.getItem('dateArray')" +
 		// 						"});"; 
 		// document.head.appendChild(myScript);
 
-		// localStorage.getItem('currentCalSD')
+		// sessionStorage.getItem('currentCalSD')
 		// document.getElementById('modifyDate').value
 // 		test = $('<script>' +
 //             "$('#meetDate').datepicker({" +
@@ -1273,7 +1388,7 @@ function hideLoader(){
 //             "format: 'yyyy-mm-dd'," +
 //             "minDate: '2018-11-01'," +
 // 			"maxDate: '2018-11-10'," +
-// 			// "disableDates: localStorage.getItem('dateArray')" +
+// 			// "disableDates: sessionStorage.getItem('dateArray')" +
 // 			"});" +
 //             " </script>" );
 //         $("body").append(test);	

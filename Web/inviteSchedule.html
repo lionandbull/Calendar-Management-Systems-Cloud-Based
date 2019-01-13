@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+<html>
+<script type="text/javascript", src="js/buttonsInvite.js"></script>
+
+	<head>
+	<script src="js/aws-sdk.js"></script>
+    <script src="js/aws-sdk.min.js"></script>
+    <script src="js/aws-cognito-sdk.min.js"></script>
+    <script src="js/amazon-cognito-identity.min.js"></script>
+
+   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://unpkg.com/gijgo@1.9.11/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.11/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../../../favicon.ico"> -->
+
+   <!--  <title>Calendar Management System</title>
+    <h1>
+	
+		Calendar Management Systems
+</h1> -->
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="starter-template.css" rel="stylesheet"> -->
+  </head>
+
+<body onload="setLocalStorage()">		
+
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">CMS Alpha</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      	<span class="badge badge-pill badge-light" id="hostNickName"></span>
+      	<span class="badge badge-pill badge-light" id="hostEmail"></span>
+      	<a class="nav-link text-white" href="index.html">Want to create your own calendars? Click me.</a>
+      </div>
+    </nav>
+
+	
+    <main role="main">
+		
+		<section class="jumbotron text-center bg-white">
+		<div class="container">
+          <h1 class="jumbotron-heading"> Calendar Management System </h1>
+            <p id="curP" class="lead text-muted"> </p>
+        </div>
+        <hr class="my-4">
+        <!-- Result -->
+		  <div align="center" id="results" class="results" style= "display:none">
+			<h1>Results</h1>
+			<p align="center" id="resultsP"> </p>
+		  </div>
+		</section>
+		
+		<div class="album py-5 bg-light" style="display:block" id="album">
+
+          <div class="container">
+            <div id="myAlert" class="sticky-top text-center"> </div>
+            
+            <div class="row" >
+
+              <div class="col-md-4">
+                    <!-- Add or remove date -->
+
+                    <!-- Schedule Meeting -->
+                    <div id="scheduleMeeting" class="scheduleMeeting" style= "display:block"> 
+                        <h2 align="center">Schedule Meeting</h2>
+                        <form name="scheduleForm" method="post">
+                          <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Meet Date</span>
+                            </div>
+                            <input id="meetDate" name="meetDate" class="form-control" width="249" readonly>
+                            
+                            <!-- <input type="Date" class="form-control" id="meetDate" name="meetDate" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"> -->
+                            <!-- <span class="validity"></span> -->
+                          </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Meet Time</span>
+                          </div>
+                          <select class="custom-select" id="meetTimeSelect" aria-label="Example select with button addon">
+                            <option> It will be filled after you select a date!</option>
+                          </select>
+                        </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Who To Meet</span>
+                            </div>
+                            <input type="text" class="form-control" id="whotomeet" name="who" aria-label="Sizing example input"  aria-describedby="inputGroup-sizing-default" readonly>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-default">Location</span>
+                            </div>
+                            <input type="text" class="form-control" id="locationInput" name="location" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                        </div>
+                        </form>
+                        <button class="btn btn-info" onclick="ScheduleMeeting()">Schedule</button>
+                    </div>
+                    <br>
+            
+                    <!-- Close Timeslot -->
+                    
+                    <!-- Show meeting -->
+              </div>
+
+              <div class="col-md-7 offset-md-1">
+                    <!-- Show meeting -->
+                    <div  id="showMeetings"  class="showMeetings" style= "display:block"> 
+                      <h2>Meeting Board</h2>
+                        
+                          <div class="input-group mb-3">
+                            <input id="dailyMeetings" name="dailyMeetings" class="form-control" width="500" readonly>
+                            <!-- <input type="Date" class="form-control" id="dailyMeetings" name="dailyMeetings" aria-describedby="button-addon1"> -->
+                            <div class="input-group-prepend">
+                            <button class="btn btn-info" type="button" id="button-addon1" onclick="ShowDailyMeetings()">Daily Meetings</button>
+                            </div>
+                          </div>
+                          <div class="input-group mb-3">
+                            <input type="Month" class="form-control" id="monthlyMeetings" name="monthlyMeetings" aria-describedby="button-addon1">
+                            <div class="input-group-prepend">
+                            <button class="btn btn-info" type="button" id="button-addon1" onclick="ShowMonthlyMeetings()">Monthly Meetings</button>
+                            </div>
+                          </div>
+                          <div class="input-group mb-3" >
+                            <!-- <input type="Month" class="form-control" id="monthlyMeetings" name="monthlyMeetings" aria-describedby="button-addon1">
+                            <div class="input-group-prepend">
+                            <button class="btn btn-info" type="button" id="button-addon1" onclick="ShowMonthlyMeetings()">Show Monthly Meetings</button>
+                            </div> -->
+                            
+                              <select id="meetingSelect" size="3" class="meetingSelect"></select>
+                              <button class="btn-xlarge btn-info" onclick="CancelMeeting()" class="meetingSelectButton">Cancel Meeting</button>
+                            
+                          </div>
+                          <button class="btn btn-info" onclick="ShowAllMeetings()">Show All Meetings</button>
+                        
+                    </div>
+              </div>
+            
+            </div>
+
+
+          </div>
+        </div>
+		
+		<div id="loader" style="display: none; position: fixed"></div>
+
+		<div id="myStorage" style= "display:none">
+			<select id="storageSelect"></select>	
+		</div>
+	</main>
+<body>
+	
+				
+
+	
+
+	
+	
+
+
+
+	
+	
+	
+	
+
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bootstrap/assets/js/vendor/popper.min.js"></script>
+    <script src="bootstrap/dist/js/bootstrap.min.js"></script> 
+    <script>
+        $('#modifyDate').datepicker({
+            // uiLibrary: 'bootstrap4',
+            format: 'yyyy-mm-dd',
+            // maxDate: sessionStorage.getItem("currentCalED", endDate)
+        });
+    </script>
+    
+	<script type="text/javascript">		
+		$("#meetDate" ).on( "change", function() {
+            // $("#timeSelect").empty();
+            RetrieveOpenTimeslot({calID:localStorage.getItem("currentCalID"), date:document.getElementById('meetDate').value, type:"Open"});
+           });		
+	</script>
+
+	<script type="text/javascript">
+		function oneValue(){
+			var result;
+			var url=window.location.search; //获取url中"?"符后的字串  
+			if(url.indexOf("?")!=-1){
+				result = url.substr(url.indexOf("=")+1);
+			}
+			return result;
+		}
+
+		function manyValues(){
+			var url=window.location.search;
+			if(url.indexOf("?")!=-1){
+				var str = url.substr(1);
+			   	strs = str.split("&"); 
+			   	var key = new Array(strs.length);
+			   	var value = new Array(strs.length);
+			   	for(i=0;i<strs.length;i++){
+			    	key[i]=strs[i].split("=")[0]
+			    	value[i]=unescape(strs[i].split("=")[1]); 
+			    	document.getElementById("show").innerHTML += key[i]+"="+value[i];
+			    	alert(key[i]+"="+value[i]);
+			 	} 
+			} 
+		}
+
+
+	</script>
+    
+</body>
+
+
+
+
+<style>
+.btn-xlarge {
+    /*padding: 18px 100px;*/
+    width: 700px;
+    
+    font-size: 20px; 
+    line-height: normal;
+    -webkit-border-radius: 8px;
+       -moz-border-radius: 8px;
+            border-radius: 8px;
+}
+
+.jumbotron {
+    height: 0px;
+}
+
+
+#loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/*.navbar-fixed-top {
+    position:fixed;
+}*/
+/*body {background-color: bg-light;}*/
+/*h1   {color: black; 
+	margin: auto;
+    width: 60%;
+    text-align: center;
+    }
+h2   {color: black; 
+	margin: auto;
+    width: 60%;
+    text-align: center;
+    }*/
+
+/*div.alert{
+  position: fixed;
+    top: 15%;
+    right: 2%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 450px;
+    text-align: center;
+}*/
+
+/*div.results {
+    position: absolute;
+    top: 15%;
+    left: 4%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 450px;
+    text-align: center;
+    border: 3px solid #73AD21;
+}*/
+
+/*div.showMeetings {
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 400px;
+    text-align: center;
+}
+
+div.scheduleMeeting {
+    position: absolute;
+    top: 30%;
+    left: 4%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 500px;
+    text-align: center;
+}
+
+div.closeTS {
+    position: absolute;
+    top: 30%;
+    right: 1%;
+    margin-top: -50px;
+    margin-left: -50px;
+    width: 500px;
+    text-align: center;
+}
+
+select.meetingSelect{
+  width: 400px;
+  height: 300px;
+  text-align: center;
+}*/
+
+/*div.myAlert{
+  position:fixed; 
+    top: 0px; 
+    left: 0px; 
+    width: 100%;
+    z-index:999; 
+    border-radius:5px
+
+}*/
+
+/*body { padding-top: 70px; }*/
+button.meetingSelectButton{
+  width: 700px;
+}
+
+
+div.showMeetings {
+    text-align: center;
+}
+
+div.scheduleMeeting {
+    text-align: center;
+}
+
+div.closeTS {
+    text-align: center;
+}
+
+select.meetingSelect{
+  width: 700px;
+  height: 300px;
+  text-align: center;
+}
+
+</style>
+
+</html>
+
+
+
+
+
