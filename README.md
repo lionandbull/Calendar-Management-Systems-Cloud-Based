@@ -1,4 +1,6 @@
 # Could based Calendar Management Systems
-This could-based Calendar Management System (CMS) can help users to manage their meetings. The final version would be same as when2meet.com.
+This could-based Calendar Management System (CMS) can help users to manage their meetings.
 
-After creating a personal calendar or uploading a existing calender, organizor and users can schedule meetings simultaneous.
+Once created a personal calendar or uploading a existing calender, organizor and users can schedule meetings simultaneous.
+
+
